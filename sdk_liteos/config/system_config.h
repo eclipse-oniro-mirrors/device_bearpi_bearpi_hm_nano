@@ -47,7 +47,7 @@ extern "C" {
  * @ingroup los_config
  * Number of Ticks in one second
  */
-#define LOSCFG_BASE_CORE_TICK_PER_SECOND_CONFIG           1000
+#define LOSCFG_BASE_CORE_TICK_PER_SECOND_CONFIG           100
 
 /** system source configuration**/
 /**

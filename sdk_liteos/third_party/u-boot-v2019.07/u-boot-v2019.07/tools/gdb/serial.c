@@ -93,6 +93,7 @@ serialreadchar(int fd, int timeout)
     FD_ZERO(&fds);
     FD_SET(fd, &fds);
 
+    /* this is a fucking horrible quick hack - fix this */
 
     if ((n = select(fd + 1, &fds, 0, 0, &tv)) < 0)
 	return SERIAL_ERROR;

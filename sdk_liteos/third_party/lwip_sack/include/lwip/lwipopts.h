@@ -223,7 +223,7 @@ extern "C" {
 #endif
 
 #ifndef LWIP_NETIFAPI_DHCPS_IP
-#define LWIP_NETIFAPI_DHCPS_IP 0
+#define LWIP_NETIFAPI_DHCPS_IP 1
 #endif
 
 #ifndef LWIP_NETIFAPI_GET_ADDR
@@ -605,6 +605,10 @@ extern "C" {
 #endif
 
 #endif /* LWIP_SMALL_SIZE */
+
+#ifndef LWIP_IGMP_REPORT_TIMES
+#define LWIP_IGMP_REPORT_TIMES 5
+#endif
 
 #ifndef LWIP_LIBCOAP
 #define LWIP_LIBCOAP 0
@@ -1921,7 +1925,7 @@ unsigned int sys_arch_rand(void);
 #if LWIP_L3_EVENT_MSG
 
 #ifndef MEMP_NUM_L3_EVENT_MSG
-#define MEMP_NUM_L3_EVENT_MSG 10
+#define MEMP_NUM_L3_EVENT_MSG 15
 #endif
 
 #ifndef LWIP_ROUTE_CHANGE_MSG

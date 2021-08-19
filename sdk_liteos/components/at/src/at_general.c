@@ -133,6 +133,12 @@ static hi_u16 g_peer_port;
 static hi_u32 g_ip_mux_id;
 #endif
 
+extern int DumpFaultLog(void);
+WEAK int DumpFaultLog(void)
+{
+    return -1;
+}
+
 hi_u32 at_exe_at_cmd(void)
 {
     AT_RESPONSE_OK;
@@ -624,6 +630,11 @@ hi_u32 at_get_dump(hi_s32 argc, const hi_char **argv)
         hi_at_printf("eid:%d, rid:%d:\r\n", err_id, rid);
     }
     hi_at_printf("\r\nlatest crash info:\r\n");
+
+    if (DumpFaultLog() == 0) {
+        hi_at_printf("OK\r\n");
+        return ret;
+    }
 
     hi_syserr_info* info = hi_malloc(HI_MOD_ID_SAL_DFX, sizeof(hi_syserr_info));
     if (info == HI_NULL) {

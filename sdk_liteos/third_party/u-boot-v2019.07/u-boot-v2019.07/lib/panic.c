@@ -5,7 +5,9 @@
  */
 
 /* vsprintf.c -- Lars Wirzenius & Linus Torvalds. */
-
+/*
+ * Wirzenius wrote this portably, Torvalds fucked it up :-)
+ */
 
 #include <common.h>
 #if !defined(CONFIG_PANIC_HANG)

@@ -32,8 +32,8 @@
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
+#endif /* __cplusplus */
+#endif /* __cplusplus */
 
 #define MEM_INFO_SIZE                   ((sizeof(MEM_INFO) * OS_SYS_MEM_NUM) + 4)
 extern UINT8 g_memMang[];
@@ -104,7 +104,7 @@ UINT32 LOS_MemExcInfoGet(UINT32 memNum, MEM_INFO_S *memExcInfo);
 #ifdef __cplusplus
 #if __cplusplus
 }
-#endif /* __cpluscplus */
-#endif /* __cpluscplus */
+#endif /* __cplusplus */
+#endif /* __cplusplus */
 
 #endif /* _LOS_MEMCHECK_H */

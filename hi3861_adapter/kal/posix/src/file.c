@@ -38,9 +38,18 @@
 
 #include "lwip/sockets.h"
 #include "hks_client.h"
+#include "hi_fs.h"
 
-#define RANDOM_DEV_FD  LWIP_CONFIG_NUM_SOCKETS
+#define RANDOM_DEV_FD  (LWIP_SOCKET_OFFSET + LWIP_CONFIG_NUM_SOCKETS)
 #define RANDOM_DEV_PATH  "/dev/random"
+
+#define IS_SOCKET_FD(fd) ((fd) >= LWIP_SOCKET_OFFSET && (fd) < (LWIP_SOCKET_OFFSET + LWIP_CONFIG_NUM_SOCKETS))
+
+#define HI_FS_MAX_OPEN_FILES (32+1)
+#define HI_FS_FD_OFFSET RANDOM_DEV_FD
+
+#define IS_HI_FS_FD(fd) ((fd) >= HI_FS_FD_OFFSET && (fd) < (HI_FS_FD_OFFSET + HI_FS_MAX_OPEN_FILES))
+#define HI_FS_FD(fd) ((fd) - HI_FS_FD_OFFSET)
 
 #define FREE_AND_SET_NULL(ptr) do { \
     free(ptr);                      \
@@ -136,6 +145,7 @@ static size_t GetCanonicalPath(const char *cwd, const char *path, char *buf, siz
 
 int open(const char *file, int oflag, ...)
 {
+    int fd = -1;
     unsigned flags = O_RDONLY | O_WRONLY | O_RDWR | O_APPEND | O_CREAT | O_LARGEFILE | O_TRUNC | O_EXCL | O_DIRECTORY;
     if (((unsigned)oflag & ~flags) || (file == NULL)) {
         errno = EINVAL;
@@ -178,8 +188,11 @@ int open(const char *file, int oflag, ...)
         return -1;
     }
     FREE_AND_SET_NULL(canonicalPath);
-    errno = ENOENT;
-    return -1;
+    fd = hi_open(file, (uint32_t)oflag);
+    if (fd < 0) {
+	return -1;
+    }
+    return fd + HI_FS_FD_OFFSET;
 }
 
 int close(int fd)
@@ -187,7 +200,14 @@ int close(int fd)
     if (fd == RANDOM_DEV_FD) {
         return 0;
     }
-    return closesocket(fd);
+    if (IS_SOCKET_FD(fd)) {
+        return closesocket(fd);
+    }
+    if (IS_HI_FS_FD(fd)) {
+        return hi_close(HI_FS_FD(fd));
+    }
+    errno = EBADF;
+    return -1;
 }
 
 ssize_t read(int fd, void *buf, size_t nbytes)
@@ -210,7 +230,14 @@ ssize_t read(int fd, void *buf, size_t nbytes)
         }
         return (ssize_t)nbytes;
     }
-    return recv(fd, buf, nbytes, 0);
+    if (IS_SOCKET_FD(fd)) {
+        return recv(fd, buf, nbytes, 0);
+    }
+    if (IS_HI_FS_FD(fd)) {
+        return hi_read(HI_FS_FD(fd), buf, nbytes);
+    }
+    errno = EBADF;
+    return -1;
 }
 
 ssize_t write(int fd, const void *buf, size_t nbytes)
@@ -219,5 +246,40 @@ ssize_t write(int fd, const void *buf, size_t nbytes)
         errno = EBADF; /* "/dev/random" is readonly */
         return -1;
     }
-    return send(fd, buf, nbytes, 0);
+    if (IS_SOCKET_FD(fd)) {
+        return send(fd, buf, nbytes, 0);
+    }
+    if (IS_HI_FS_FD(fd)) {
+        return hi_write(HI_FS_FD(fd), (const char*)buf, nbytes);
+    }
+    errno = EBADF;
+    return -1;
+}
+
+off_t lseek(int fd, off_t offset, int whence)
+{
+    if (fd == RANDOM_DEV_FD) {
+        errno = ENOTSUP;
+        return (off_t)-1;
+    }
+    if (IS_SOCKET_FD(fd)) {
+        errno = ESPIPE;
+        return (off_t)-1;
+    }
+    if (IS_HI_FS_FD(fd)) {
+        return hi_lseek(HI_FS_FD(fd), offset, whence);
+    }
+    errno = EBADF;
+    return (off_t)-1;
+}
+
+int unlink(const char *path)
+{
+    return hi_unlink(path);
+}
+
+int fsync(int fd)
+{
+    (void)fd;
+    return 0;
 }

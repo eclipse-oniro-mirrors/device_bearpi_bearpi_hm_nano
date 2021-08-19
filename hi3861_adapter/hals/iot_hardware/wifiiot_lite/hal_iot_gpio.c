@@ -16,7 +16,7 @@
 #include "iot_errno.h"
 #include "iot_gpio.h"
 #include "hi_gpio.h"
-#include "hi_io.h"
+
 
 #define GPIO_PIN_INIT    1
 #define GPIO_PIN_UNINIT  0

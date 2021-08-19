@@ -84,6 +84,13 @@ struct igmp_group {
   u16_t              timer;
   /* counter of simultaneous uses */
   u8_t               use;
+#if (LWIP_IGMP_REPORT_TIMES > 2)
+#if (LWIP_IGMP_REPORT_TIMES > 10)
+#error "invalid LWIP_IGMP_REPORT_TIMES"
+#endif
+  u8_t report_timer;
+  u8_t report_cnt;
+#endif
 };
 
 /*  Prototypes */

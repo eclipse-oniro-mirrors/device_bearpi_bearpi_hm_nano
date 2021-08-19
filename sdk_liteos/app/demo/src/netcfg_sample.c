@@ -22,7 +22,6 @@
 #include "cmsis_os2.h"
 #include "ohos_init.h"
 #include "ohos_types.h"
-#include "netcfg_service.h"
 #include "wifi_device_config.h"
 #include "wifiiot_gpio.h"
 #include "wifiiot_gpio_ex.h"
