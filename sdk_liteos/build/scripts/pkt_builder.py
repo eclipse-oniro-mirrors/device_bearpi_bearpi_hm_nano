@@ -349,7 +349,7 @@ if __name__ == '__main__':
             if ((hilink_enable == True) or (burn_tee_cert == True)):
                 list.append('%s|%d|%d|1'%(burn_for_erase_bin, 0x200000 - 0x8000 - 0x1000, 0x1000))
 
-            list.append('%s|%d|%d|1'%(boot_b, 0x200000 - boot_b_size, boot_b_size));
+            #list.append('%s|%d|%d|1'%(boot_b, 0x200000 - boot_b_size, boot_b_size));
 
             if (burn_tee_cert == True):
                 cert_key_bin = bytearray(tee_cert_key_bin_max)

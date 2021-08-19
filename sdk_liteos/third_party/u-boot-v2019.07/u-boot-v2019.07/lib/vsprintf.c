@@ -4,7 +4,12 @@
  *  Copyright (C) 1991, 1992  Linus Torvalds
  */
 
-
+/* vsprintf.c -- Lars Wirzenius & Linus Torvalds. */
+/*
+ * Wirzenius wrote this portably, Torvalds fucked it up :-)
+ *
+ * from hush: simple_itoa() was lifted from boa-0.93.15
+ */
 
 #include <common.h>
 #include <charset.h>

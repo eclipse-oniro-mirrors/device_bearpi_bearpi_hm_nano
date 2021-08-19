@@ -463,6 +463,10 @@ extern int g_is_lwip_initialized;
 #define LWIP_NAT64    0
 #endif
 
+#ifndef LWIP_NAT64_PRIORITY_KEEP
+#define LWIP_NAT64_PRIORITY_KEEP 1
+#endif
+
 /**
  * LWIP_MBR_BROADCAST_SYNC : This configuration if enabled, starts the broadcast sync function in the sdv.
  * the sync function will also use one timer.
@@ -1351,6 +1355,14 @@ extern unsigned int g_lwip_num_sockets;
 #if !LWIP_IPV4
 #undef LWIP_IGMP
 #define LWIP_IGMP                       0
+#endif
+
+/**
+ * times to send IGMP report messages
+ * may increase this value depend on the packet loss rate
+ */
+#ifndef LWIP_IGMP_REPORT_TIMES
+#define LWIP_IGMP_REPORT_TIMES 2
 #endif
 /**
  * @}

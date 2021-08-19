@@ -30,7 +30,7 @@ hi_void hi_tee_irq_handler(void)
 #if defined(CONFIG_FACTORY_TEST_MODE) && defined(CONFIG_HILINK) && defined(CONFIG_HILINK_PKI_SUPPORT)
     hks_handle_secure_pki_provision();
 #else
-    hks_handle_secure_call();
+    //hks_handle_secure_call();
 #endif
 #else
     printf("receive tee irq\r\n");

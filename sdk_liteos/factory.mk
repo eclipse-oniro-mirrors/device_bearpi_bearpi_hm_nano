@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# ç›´æ¥ä½¿ç”¨makeè¿›è¡Œç¼–è¯‘çš„ä½¿ç”¨æ–¹æ³•
-# make æˆ– make all : åˆ é™¤æ‰€æœ‰äº¤ä»˜ä»¶å†é‡æ–°ç¼–è¯‘æ‰€æœ‰æ¨¡å—
-# make clean : åˆ é™¤æ‰€æœ‰äº¤ä»˜ä»¶
-# make link : é“¾æ¥
+# Ö±½ÓÊ¹ÓÃmake½øĞĞ±àÒëµÄÊ¹ÓÃ·½·¨
+# make »ò make all : É¾³ıËùÓĞ½»¸¶¼şÔÙÖØĞÂ±àÒëËùÓĞÄ£¿é
+# make clean : É¾³ıËùÓĞ½»¸¶¼ş
+# make link : Á´½Ó
 MAIN_TOPDIR = $(shell pwd)
 THIRD_DIR = $(MAIN_TOPDIR)/third_party
 U_BOOT_DIR = $(MAIN_TOPDIR)/third_party/u-boot-v2019.07

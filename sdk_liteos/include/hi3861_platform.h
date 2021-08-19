@@ -31,9 +31,9 @@
 #define PKT_H_LEN           0x2000 /* PKT_H:8K MIN:7K */
 #define PKT_B_START_ADDR    (0x03100000)
 #ifdef CONFIG_CHIP_PKT_48K
-#define PKT_B_LEN           0xC000 /* PKT_B:32K */
+#define PKT_B_LEN           0xC000 /* PKT_B:48K */
 #else
-#define PKT_B_LEN           0x8000 /* PKT_B:48K */
+#define PKT_B_LEN           0x8000 /* PKT_B:32K */
 #endif
 
 #endif

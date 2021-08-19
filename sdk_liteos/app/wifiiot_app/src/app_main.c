@@ -213,11 +213,11 @@ hi_void peripheral_init(hi_void)
     } else {
         ret = hi_uart_lp_restore(HI_UART_IDX_1);
         if (ret != HI_ERR_SUCCESS) {
-            err_info |= PERIPHERAL_INIT_ERR_UART0;
+            err_info |= PERIPHERAL_INIT_ERR_UART1;
         }
         ret = hi_uart_lp_restore(HI_UART_IDX_0);
         if (ret != HI_ERR_SUCCESS) {
-            err_info |= PERIPHERAL_INIT_ERR_UART1;
+            err_info |= PERIPHERAL_INIT_ERR_UART0;
         }
         ret = hi_uart_lp_restore(HI_UART_IDX_2);
         if (ret != HI_ERR_SUCCESS) {

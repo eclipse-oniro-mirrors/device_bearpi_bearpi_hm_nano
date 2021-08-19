@@ -39,8 +39,6 @@ unsigned int IoTI2cRead(unsigned int id, unsigned short deviceAddr, unsigned cha
     return hi_i2c_read((hi_i2c_idx)id, deviceAddr, &i2cData);
 }
 
-
-
 unsigned int IoTI2cInit(unsigned int id, unsigned int baudrate)
 {
     return hi_i2c_init((hi_i2c_idx)id, baudrate);

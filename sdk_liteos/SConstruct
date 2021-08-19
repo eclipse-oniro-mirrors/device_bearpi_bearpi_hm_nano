@@ -26,7 +26,7 @@ import sys
 import datetime
 import atexit
 from distutils import dir_util
-sys.path.append(os.path.join(os.getcwd(), 'build'))
+sys.path.insert(0,os.path.join(os.getcwd(), 'build'))
 from scripts import common_env
 from scripts import scons_utils
 from scripts import scons_app
@@ -346,7 +346,7 @@ def burn_bin_builder(target, source, env):
     if ((get_hilink_enable() == True) or (burn_tee_cert == True)):
         cmd_list.append('%s|%d|%d|1'%(burn_for_erase_bin, 0x200000 - 0x8000 - 0x1000, 0x1000))
 
-    cmd_list.append('%s|%d|%d|1'%(boot_b, 0x200000 - boot_b_size, boot_b_size));
+    #cmd_list.append('%s|%d|%d|1'%(boot_b, 0x200000 - boot_b_size, boot_b_size));
 
     if (burn_tee_cert == True):
         cert_key_bin = bytearray(tee_cert_key_bin_max)

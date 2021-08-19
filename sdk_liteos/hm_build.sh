@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 product_out_dir="$1"
+win_compile="$2"
 # prebuild #
 cd ../../../../device/bearpi/bearpi_hm_nano/sdk_liteos
 CROOT=$(pwd)
@@ -16,6 +17,10 @@ mkdir -p $OHOS_LIBS_DIR
 find $OUTPUT_DST_DIR/libs/ -name '*.a' -exec cp "{}" $OHOS_LIBS_DIR  \;
 find $CROOT/3rd_sdk/ -name '*.a' -exec cp "{}" $OHOS_LIBS_DIR  \;
 
+# patch win compile#
+if [ "$win_compile" = "win" ]; then
+    cp -rvf $CROOT/build/win_scripts/* $CROOT/
+fi
 
 # build #
 ./build.sh wifiiot_app

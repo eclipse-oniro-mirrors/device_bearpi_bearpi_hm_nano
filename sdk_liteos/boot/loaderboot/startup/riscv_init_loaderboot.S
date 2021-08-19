@@ -96,7 +96,7 @@ trap_vector:
     LREG x28, 12 * REGBYTES(sp)
     LREG x29, 13 * REGBYTES(sp)
     LREG x30, 14 * REGBYTES(sp)
-    SREG x31, 15 * REGBYTES(sp)
+    LREG x31, 15 * REGBYTES(sp)
     addi  sp, sp, INT_SIZE_ON_STACK
 .endm
 
