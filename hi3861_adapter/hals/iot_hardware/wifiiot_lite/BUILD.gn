@@ -22,11 +22,16 @@ static_library("hal_iothardware") {
       "hal_iot_watchdog.c",
       "hal_lowpower.c",
       "hal_reset.c",
+      "hal_iot_gpio_ex.c",
+      "hal_iot_adc.c",
+      "hal_iot_i2c_ex.c",
+      "hal_iot_spi.c",
     ]
     include_dirs = [
       "//utils/native/lite/include",
       "//base/iot_hardware/peripheral/interfaces/kits",
       "//device/bearpi/bearpi_hm_nano/sdk_liteos/include",
+      "//device/bearpi/bearpi_hm_nano/iot_hardware_hals/include",
     ]
   }
 }
