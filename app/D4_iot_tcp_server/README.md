@@ -1,9 +1,9 @@
 # BearPi-HM_Nano开发板WiFi编程开发——TCP服务器
 本示例将演示如何在BearPi-HM_Nano开发板上使用socket编程创建TCP服务端，接收客户端消息并回复固定消息。
 
-![BearPi-HM_Nano](../../docs/figures/00_public/BearPi-HM_Nano.png)
+
 ## socket API分析
-本案例主要使用了以下几个API完socket编程实验
+本案例主要使用了以下几个API完socket编程实验。
 ### socket()
 
 ```c
@@ -18,7 +18,7 @@ bind(sockfd,(struct sockaddr*)&serveraddr,sizeof(serveraddr))
 ```
 **描述：**
 
-把一个本地协议地址和套接口绑定，比如把本机的2222端口绑定到套接口。注意：为什么在上图中客户端不需要调用bind函数？这是因为如果没有调用bind函数绑定一个端口的话，当调用connect函数时，内核会为该套接口临时选定一个端口，因此可以不用绑定。而服务器之所以需要绑定的原因就是，所以客户端都需要知道服务器使用的哪个端口，所以需要提前绑定
+把一个本地协议地址和套接口绑定，比如把本机的2222端口绑定到套接口。注意：为什么在上图中客户端不需要调用bind函数？这是因为如果没有调用bind函数绑定一个端口的话，当调用connect函数时，内核会为该套接口临时选定一个端口，因此可以不用绑定。而服务器之所以需要绑定的原因就是，所以客户端都需要知道服务器使用的哪个端口，所以需要提前绑定。
 
 
 ### listen()
@@ -45,7 +45,7 @@ int recv( SOCKET s, char *buf, int  len, int flags)
 ```
 **描述：**
 
-recv函数用来从TCP连接的另一端接收数据
+recv函数用来从TCP连接的另一端接收数据。
 
 ### send()
 ```c
@@ -61,14 +61,14 @@ send函数用来向TCP连接的另一端发送数据。
 
 **主要代码分析**
 
-完成Wifi热点的连接需要以下几步
+完成Wifi热点的连接需要以下几步。
 
-1. 通过 `socket` 接口创建一个socket,`AF_INT`表示ipv4,`SOCK_STREAM`表示使用tcp协议
+1. 通过 `socket` 接口创建一个socket,`AF_INT`表示ipv4,`SOCK_STREAM`表示使用tcp协议。
 2. 调用 `bind` 接口绑定socket和地址。
-3. 调用 `listen` 接口监听(指定port监听),通知操作系统区接受来自客户端链接请求,第二个参数：指定队列长度
-4. 调用`accept`接口从队列中获得一个客户端的请求链接
-5. 调用 `recv` 接口接收客户端发来的数据
-6. 调用 `send` 接口向客户端回复固定的数据
+3. 调用 `listen` 接口监听(指定port监听),通知操作系统区接受来自客户端链接请求,第二个参数：指定队列长度。
+4. 调用`accept`接口从队列中获得一个客户端的请求链接。
+5. 调用 `recv` 接口接收客户端发来的数据。
+6. 调用 `send` 接口向客户端回复固定的数据。
 
 ```c
 static void TCPServerTask(void)
@@ -168,7 +168,7 @@ static void TCPServerTask(void)
 
 ### 运行结果
 
-示例代码编译烧录代码后，按下开发板的RESET按键，通过串口助手查看日志，会打印模块的本地IP，如本例程中的 `192.1668.0.164` ,并开始准备获取客户端的请求链接
+示例代码编译烧录代码后，按下开发板的RESET按键，通过串口助手查看日志，会打印模块的本地IP，如本例程中的 `192.168.0.164` ,并开始准备获取客户端的请求链接。
 ```
 g_connected: 1
 netifapi_dhcp_start: 0
@@ -185,11 +185,11 @@ clients <1> :
 netifapi_netif_common: 0
 start accept
 ```
-使用 Socket tool 创建客户端用于测试。
+使用 Socket tool 创建客户端用于测试，如下图所示。
 
 ![创建TCP_Clien](../../docs/figures/D4_iot_tcp_server/创建TCP_Clien.png)
 
-在创建客户端后点击“连接”，在数据发送窗口输入要发送的数据，点击发送后服务端会回复固定消息，且开发板收到消息后会通过日志打印出来。
+在创建客户端后点击“连接”，在数据发送窗口输入要发送的数据，点击发送后服务端会回复固定消息，如下图所示，且开发板收到消息后会通过日志打印出来。
 
 ```
 start accept

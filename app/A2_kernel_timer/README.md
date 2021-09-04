@@ -1,5 +1,5 @@
 # BearPi-HM_Nano开发板OpnenHarmony内核编程开发——定时器
-本示例将演示如何在BearPi-HM_Nano开发板上使用cmsis 2.0 接口进行定时器开发
+本示例将演示如何在BearPi-HM_Nano开发板上使用cmsis 2.0 接口进行定时器开发。
 
 
 ## Timer API分析
@@ -13,17 +13,17 @@ osTimerId_t osTimerNew	(osTimerFunc_t func,osTimerType_t type,void *argument,con
 **描述：**
 
 函数osTimerNew创建一个一次性或周期性计时器，并将其与一个带参数的回调函数相关联。计时器在osTimerStart启动之前一直处于停止状态。可以在RTOS启动(调用 osKernelStart)之前安全地调用该函数，但不能在内核初始化 (调用 osKernelInitialize)之前调用该函数。
-> **注意** :不能在中断服务调用该函数
+> **注意** :不能在中断服务调用该函数。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| func | 函数指针指向回调函数.  |
-| type | 定时器类型，osTimerOnce表示单次定时器，ostimer周期表示周期性定时器.  |
-| argument |定时器回调函数的参数|
-| attr |计时器属性|
+| func | 函数指针指向回调函数。  |
+| type | 定时器类型，osTimerOnce表示单次定时器，ostimer周期表示周期性定时器。  |
+| argument |定时器回调函数的参数。|
+| attr |计时器属性。|
 
 ### osTimerStart()
 
@@ -34,22 +34,22 @@ osStatus_t osTimerStart	(osTimerId_t timer_id,uint32_t ticks)
 
 函数osTimerStart启动或重新启动指定参数timer_id的计时器。参数ticks指定计时器的计数值。
 
-> **注意** :不能在中断服务调用该函数
+> **注意** :不能在中断服务调用该函数。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| timer_id | 由osTimerNew获得的计时器ID.  |
-| ticks | 时间滴答计时器的值.  |
+| timer_id | 由osTimerNew获得的计时器ID。  |
+| ticks | 时间滴答计时器的值。  |
 
 ## 软件设计
 
 
 **主要代码分析**
 
-在TimerExample函数中，通过osTimerNew()函数创建了回调函数为Timer1Callback的定时器1，并通过osTimerStart()函数将该定时器设置为100个tick,因为hi3861默认10ms为一个tick,所以100个tick正好为1S钟，1S计时到后会触发Timer1Callback()函数并打印日志。定时器2也同理为3S触发Timer2Callback()函数并打印日志.
+在TimerExample函数中，通过osTimerNew()函数创建了回调函数为Timer1Callback的定时器1，并通过osTimerStart()函数将该定时器设置为100个tick,因为hi3861默认10ms为一个tick,所以100个tick正好为1S钟，1S计时到后会触发Timer1Callback()函数并打印日志。定时器2也同理为3S触发Timer2Callback()函数并打印日志。
 
 ```c
 /**

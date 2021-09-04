@@ -1,5 +1,5 @@
 # BearPi-HM_Nano开发板WiFi编程开发——MQTT连接华为IoT平台
-本示例将演示如何在BearPi-HM_Nano开发板上使用MQTT协议连接华为IoT平台,使用的是E53_IA1 智慧农业扩展板与 BearPi-HM_Nano 开发板
+本示例将演示如何在BearPi-HM_Nano开发板上使用MQTT协议连接华为IoT平台,使用的是E53_IA1 智慧农业扩展板与 BearPi-HM_Nano 开发板，设备安装如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/E53_IA1安装.png "E53_IA1安装")
 # 华为IoT平台 API
@@ -8,15 +8,15 @@
 ### 设备信息
 > void device_info_init(char *client_id, char * username, char *password);
 
-设置设备信息，在调用oc_mqtt_init()前要先设置设备信息
+设置设备信息，在调用oc_mqtt_init()前要先设置设备信息。
 
 | **参数**  | **描述**  |
 | :-----   | :-----    |
 |无         | 无       |
 | **返回**  | **描述**  |
-|0         | 成功                |
-|-1        | 获得设备信息失败      |
-|-2        | mqtt 客户端初始化失败 |
+|0         | 成功。             |
+|-1        | 获得设备信息失败。      |
+|-2        | mqtt 客户端初始化失败。 |
 
 
 ### 华为IoT平台 初始化
@@ -29,9 +29,9 @@
 | :-----   | :-----    |
 |无         | 无       |
 | **返回**  | **描述**  |
-|0         | 成功                |
-|-1        | 获得设备信息失败      |
-|-2        | mqtt 客户端初始化失败 |
+|0         | 成功。                |
+|-1        | 获得设备信息失败。      |
+|-2        | mqtt 客户端初始化失败。 |
 
 ### 设置命令响应函数
 
@@ -41,10 +41,10 @@
 
 | **参数**    | **描述**    |
 | :-----	 | :-----  	   |
-|recv_data   | 接收到的数据  |
-|recv_size   | 数据的长度    |
-|resp_data   | 响应数据      |
-|resp_size   | 响应数据的长度 |
+|recv_data   | 接收到的数据。  |
+|recv_size   | 数据的长度。    |
+|resp_data   | 响应数据。      |
+|resp_size   | 响应数据的长度。 |
 | **返回**    | **描述**     |
 |无           | 无          |
 
@@ -58,11 +58,11 @@
 
 | **参数**  | **描述**    	|
 | :-----   | :-----  	  |
-|deviceid     | 设备id       	|
-|payload       | 要上传的消息   |
+|deviceid     | 设备id。       	|
+|payload       | 要上传的消息。   |
 | **返回**  | **描述**     |
-|0         | 上传成功 	   |
-|1        | 上传失败 	   |
+|0         | 上传成功。 	   |
+|1        | 上传失败。 	   |
 
 ### 设备上报属性数据
 
@@ -72,13 +72,13 @@
 
 | **参数**  | **描述**    	|
 | :-----   | :-----  	  |
-|deviceid     | 设备id       	|
-|payload       | 要上传的消息   |
+|deviceid     | 设备id。       	|
+|payload       | 要上传的消息。   |
 | **返回**  | **描述**     |
-|0         | 上传成功 	   |
-|1        | 上传失败 	   |
+|0         | 上传成功。 	   |
+|1        | 上传失败。 	   |
 
->**属性上报和消息上报的区别，请查看[消息通信说明](https://support.huaweicloud.com/usermanual-iothub/iot_01_0045_2.html)**
+>**属性上报和消息上报的区别，请查看[消息通信说明](https://support.huaweicloud.com/usermanual-iothub/iot_01_0045_2.html)。**
 
 ### 网关批量上报属性数据
 
@@ -88,11 +88,11 @@
 
 | **参数**  | **描述**    	|
 | :-----   | :-----  	  |
-|deviceid     | 设备id       	|
-|payload       | 要上传的消息   |
+|deviceid     | 设备id。       	|
+|payload       | 要上传的消息。   |
 | **返回**  | **描述**     |
-|0         | 上传成功 	   |
-|1        | 上传失败 	   |
+|0         | 上传成功。 	   |
+|1        | 上传失败。 	   |
 
 ### 属性设置的响应结果
 
@@ -101,11 +101,11 @@ int oc_mqtt_profile_propertysetresp(char *deviceid,oc_mqtt_profile_propertysetre
 
 | **参数**  | **描述**    	|
 | :-----   | :-----  	  |
-|deviceid     | 设备id       	|
-|payload       | 消息   |
+|deviceid     | 设备id。       	|
+|payload       | 消息。   |
 | **返回**  | **描述**     |
-|0         | 上传成功 	   |
-|1        | 上传失败 	   |
+|0         | 上传成功。 	   |
+|1        | 上传失败。 	   |
 
 ### 属性查询响应结果
 
@@ -114,11 +114,11 @@ int oc_mqtt_profile_propertysetresp(char *deviceid,oc_mqtt_profile_propertysetre
 
 | **参数**  | **描述**    	|
 | :-----   | :-----  	  |
-|deviceid     | 设备id       	|
-|payload       | 消息   |
+|deviceid     | 设备id。       	|
+|payload       | 消息。   |
 | **返回**  | **描述**     |
-|0         | 上传成功 	   |
-|1        | 上传失败 	   |
+|0         | 上传成功。 	   |
+|1        | 上传失败。 	   |
 
 ### 将命令的执行结果返回给平台
 
@@ -127,11 +127,11 @@ int oc_mqtt_profile_propertysetresp(char *deviceid,oc_mqtt_profile_propertysetre
 
 | **参数**  | **描述**    	|
 | :-----   | :-----  	  |
-|deviceid     | 设备id       	|
-|payload       | 要上传的消息   |
+|deviceid     | 设备id。       	|
+|payload       | 要上传的消息。   |
 | **返回**  | **描述**     |
-|0         | 上传成功 	   |
-|1        | 上传失败 	   |
+|0         | 上传成功。 	   |
+|1        | 上传失败。 	   |
 
 
 
@@ -309,7 +309,7 @@ EXIT_JSONPARSE:
 
 设备接入华为云平台之前，需要在平台注册用户账号，华为云地址：<https://www.huaweicloud.com/>
 
-在华为云首页单击产品，找到IoT物联网，单击设备接入IoTDA 并单击立即使用。
+在华为云首页单击产品，找到IoT物联网，单击设备接入IoTDA 并单击立即使用，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/登录平台01.png "登录平台")
 
@@ -323,20 +323,20 @@ EXIT_JSONPARSE:
 
 域名：iot-mqtts.cn-north-4.myhuaweicloud.com
 
-选中侧边栏产品页，单击右上角“创建产品”
+选中侧边栏产品页，单击右上角“创建产品”，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/创建产品01.png "创建产品")
 
-在页面中选中所属资源空间，并且按要求填写产品名称，选中MQTT协议，数据格式为JSON，并填写厂商名称，在下方模型定义栏中选择所属行业以及添加设备类型，并单击右下角“立即创建”如图：
+在页面中选中所属资源空间，并且按要求填写产品名称，选中MQTT协议，数据格式为JSON，并填写厂商名称，在下方模型定义栏中选择所属行业以及添加设备类型，并单击右下角“立即创建”，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/创建产品02.png "创建产品")
 
-创建完成后，在产品页会自动生成刚刚创建的产品，单击“查看”可查看创建的具体信息。
+创建完成后，在产品页会自动生成刚刚创建的产品，单击“查看”可查看创建的具体信息，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/创建产品03.png "创建产品")
 
 
-单击产品详情页的自定义模型，在弹出页面中新增服务
+单击产品详情页的自定义模型，在弹出页面中新增服务，如下图所示。
 
 服务ID：`Agriculture`(必须一致)
 
@@ -344,7 +344,7 @@ EXIT_JSONPARSE:
 ![](../../docs/figures/D6_iot_cloud_oc/创建产品04.png "创建产品")
 
 在“Agriculture”的下拉菜单下点击“添加属性”填写相关信息“Temperature”，
-“Humidity”，“Luminance”，“LightStatus”，“MotorStatus”。
+“Humidity”，“Luminance”，“LightStatus”，“MotorStatus”，如下图所示。
 
 
 ![](../../docs/figures/D6_iot_cloud_oc/创建产品05.png "创建产品")
@@ -357,7 +357,7 @@ EXIT_JSONPARSE:
 
 ![](../../docs/figures/D6_iot_cloud_oc/创建产品09.png "创建产品")
 
-在“Agriculture”的下拉菜单下点击“添加命令”填写相关信息。
+在“Agriculture”的下拉菜单下点击“添加命令”填写相关信息，如下图所示。
 
 命令名称：`Agriculture_Control_light`
 
@@ -385,25 +385,25 @@ EXIT_JSONPARSE:
 
 #### 注册设备
 
-在侧边栏中单击“设备”，进入设备页面，单击右上角“注册设备”，勾选对应所属资源空间并选中刚刚创建的产品，注意设备认证类型选择“秘钥”，按要求填写秘钥。
+在侧边栏中单击“设备”，进入设备页面，单击右上角“注册设备”，勾选对应所属资源空间并选中刚刚创建的产品，注意设备认证类型选择“秘钥”，按要求填写秘钥，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/注册设备01.png "注册设备")
 
-记录下设备ID和设备密钥
+记录下设备ID和设备密钥，如下图所示。
 ![](../../docs/figures/D6_iot_cloud_oc/注册设备02.png "注册设备")
 
-注册完成后，在设备页面单击“所有设备”，即可看到新建的设备，同时设备处于未激活状态
+注册完成后，在设备页面单击“所有设备”，即可看到新建的设备，同时设备处于未激活状态，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/注册设备03.png "注册设备")
 
 
 ### 修改代码中设备信息
-在连接平台前需要获取CLIENT_ID、USERNAME、PASSWORD，访问[这里](https://iot-tool.obs-website.cn-north-4.myhuaweicloud.com/)，填写注册设备时生成的设备ID和设备密钥生成连接信息（ClientId、Username、Password），并将修改代码对应位置。
+在连接平台前需要获取CLIENT_ID、USERNAME、PASSWORD，访问[这里](https://iot-tool.obs-website.cn-north-4.myhuaweicloud.com/)，填写注册设备时生成的设备ID和设备密钥生成连接信息（ClientId、Username、Password），并将修改代码对应位置，如下图所示。
 ![](../../docs/figures/D6_iot_cloud_oc/修改设备信息01.png "修改设备信息")
 
 ![](../../docs/figures/D6_iot_cloud_oc/修改设备信息02.png "修改设备信息")
 
-修改wifi热点信息
+修改wifi热点信息，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/修改设备信息03.png "修改设备信息")
 
@@ -441,13 +441,13 @@ SENSOR:lum:15.83 temp:26.67 hum:39.91
 
 SENSOR:lum:16.67 temp:26.66 hum:40.00
 ```
-平台上的设备显示为在线状态
+平台上的设备显示为在线状态，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/设备在线.png "设备在线")
     
-点击设备右侧的“查看”，进入设备详情页面，可看到上报的数据
+点击设备右侧的“查看”，进入设备详情页面，可看到上报的数据，如下图所示。
 
 ![](../../docs/figures/D6_iot_cloud_oc/查看设备信息.png "查看设备信息")
 
-在华为云平台设备详情页，单击“命令”，选择同步命令下发，选中创建的命令属性，单击“确定”，即可发送下发命令控制设备
+在华为云平台设备详情页，单击“命令”，选择同步命令下发，选中创建的命令属性，单击“确定”，即可发送下发命令控制设备，如下图所示。
 ![](../../docs/figures/D6_iot_cloud_oc/命令下发.png "命令下发")

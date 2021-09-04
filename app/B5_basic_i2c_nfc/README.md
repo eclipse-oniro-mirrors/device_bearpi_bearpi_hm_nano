@@ -1,25 +1,24 @@
 # BearPi-HM_Nano开发板基础外设开发——I2C控制NFC芯片
-本示例将演示如何在BearPi-HM_Nano开发板上使用I2C协议向NFC芯片写入数据
+本示例将演示如何在BearPi-HM_Nano开发板上使用I2C协议向NFC芯片写入数据。
 
-![BearPi-HM_Nano](../../docs/figures/00_public/BearPi-HM_Nano.png)
 
 ## I2C API分析
-本示例主要使用了以下API完成I2C采样的功能
+本示例主要使用了以下API完成I2C采样的功能。
 ### IoTI2cInit()
 ```c
 unsigned int IoTI2cInit(unsigned int id, unsigned int baudrate);
 ```
  **描述：**
 
-用指定的频率初始化I2C设备
+用指定的频率初始化I2C设备。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | I2C设备ID.  |
-| baudrate |I2C频率|
+| id | I2C设备ID。  |
+| baudrate |I2C频率。|
 
 ## IoTI2cSetBaudrate()
 ```c
@@ -27,14 +26,14 @@ unsigned int IoTI2cSetBaudrate(unsigned int id, unsigned int baudrate);
 ```
  **描述：**
 
-为I2C设备设置频率
+为I2C设备设置频率。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | I2C设备ID.  |
-| baudrate |I2C频率|
+| id | I2C设备ID。  |
+| baudrate |I2C频率。|
 
 ## IoTI2cWrite()
 ```c
@@ -43,17 +42,17 @@ unsigned int IoTI2cWrite(unsigned int id, unsigned short deviceAddr, const unsig
 ```
  **描述：**
 
-将数据写入I2C设备
+将数据写入I2C设备。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | I2C设备ID.  |
-| deviceAddr |I2C设备地址|
-| data |表示写入的数据|
-| dataLen |表示要写入的数据长度|
+| id | I2C设备ID。  |
+| deviceAddr |I2C设备地址。|
+| data |表示写入的数据。|
+| dataLen |表示要写入的数据长度。|
 
 ## IoTI2cRead()
 ```c
@@ -61,22 +60,22 @@ unsigned int IoTI2cRead(unsigned int id, unsigned short deviceAddr, unsigned cha
 ```
  **描述：**
 
-从I2C设备读取数据。读取的数据将保存到i2cData指定的地址
+从I2C设备读取数据。读取的数据将保存到i2cData指定的地址。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | I2C设备ID.  |
-| deviceAddr |I2C设备地址|
-| data |表示要读取的数据指向的指针|
-| dataLen |表示要读取的数据长度|
+| id | I2C设备ID。  |
+| deviceAddr |I2C设备地址。|
+| data |表示要读取的数据指向的指针。|
+| dataLen |表示要读取的数据长度。|
 
 
 
 ## 硬件设计
-如下图所示，NFC芯片使用的是I2C协议，I2C_SCL与GPIO_0相连接，I2C_SDA与GPIO_1相连接，所以需要编写软件使用GPIO_0和GPIO_1产生I2C信号去控制NFC芯片
+如下图所示，NFC芯片使用的是I2C协议，I2C_SCL与GPIO_0相连接，I2C_SDA与GPIO_1相连接，所以需要编写软件使用GPIO_0和GPIO_1产生I2C信号去控制NFC芯片。
 
 ![E53接口电路](../../docs/figures/B5_basic_i2c_nfc/NFC电路.png "E53接口电路")
 
@@ -84,7 +83,7 @@ unsigned int IoTI2cRead(unsigned int id, unsigned short deviceAddr, unsigned cha
 
 **主要代码分析**
 
-这部分代码为I2C初始化的代码，首先用 `IoTGpioSetFunc()` 函数将GPIO_0复用为I2C1_SDA，GPIO_1复用为I2C1_SCL。然后调用IoTI2cInit()函数初始化I2C1端口，最后使用 `I2cSetBaudrate()` 函数设置I2C1的频率为400kbps.
+这部分代码为I2C初始化的代码，首先用 `IoTGpioSetFunc()` 函数将GPIO_0复用为I2C1_SDA，GPIO_1复用为I2C1_SCL。然后调用IoTI2cInit()函数初始化I2C1端口，最后使用 `I2cSetBaudrate()` 函数设置I2C1的频率为400kbps。
 ```c
     //GPIO_0 multiplexed to I2C1_SDA
     IoTGpioInit(0);

@@ -1,30 +1,31 @@
 # BearPi-HM_Nano开发板传感器驱动开发——MQ2读取烟雾浓度
-本示例将演示如何在BearPi-HM_Nano开发板上使用E53_SF1读取烟雾浓度，当烟雾浓度超标时蜂鸣器发出警报
+本示例将演示如何在BearPi-HM_Nano开发板上使用E53_SF1读取烟雾浓度，当烟雾浓度超标时蜂鸣器发出警报，设备安装如下图所示。
 
 ![E53_SF1安装](../../docs/figures/C1_e53_sf1_mq2/E53_SF1安装.png "E53_SF1安装")
 ## E53_SF1 API分析
-本案例主要使用了以下API完成烟雾浓度读取
+本案例主要使用了以下API完成烟雾浓度读取。
 ### E53SF1Init()
 ```C
 void E53SF1Init(void)
 ```
  **描述：**
 
-初始化E53_SF1
+初始化E53_SF1。
 
 ### MQ2PPMCalibration()
 ```C
 void MQ2PPMCalibration(void)
 ```
  **描述：**
-MQ2传感器校准
+ 
+MQ2传感器校准。
 ### GetMQ2PPM()
 ```C
 float GetMQ2PPM(void)
 ```
  **描述：**
 
-获取烟雾浓度ppm
+获取烟雾浓度ppm。
 
 
 ## 硬件设计
@@ -34,7 +35,7 @@ float GetMQ2PPM(void)
 
 ![E53接口电路](../../docs/figures/C1_e53_sf1_mq2/E53接口电路.png "E53接口电路")
 
-E53_SF1 智慧烟感扩展板与 BearPi-HM_Nano 开发板安装如下图所示
+E53_SF1 智慧烟感扩展板与 BearPi-HM_Nano 开发板安装如下图所示。
 
 ![E53_SF1安装](../../docs/figures/C1_e53_sf1_mq2/E53_SF1安装.png "E53_SF1安装")
 

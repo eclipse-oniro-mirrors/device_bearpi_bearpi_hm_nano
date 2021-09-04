@@ -1,5 +1,5 @@
 # BearPi-HM_Nano开发板OpnenHarmony内核编程开发——互斥锁
-本示例将演示如何在BearPi-HM_Nano开发板上使用cmsis 2.0 接口使用互斥来同步任务
+本示例将演示如何在BearPi-HM_Nano开发板上使用cmsis 2.0 接口使用互斥来同步任务。
 
 
 ## Mutex API分析
@@ -13,14 +13,14 @@ osMutexId_t osMutexNew(const osMutexAttr_t *attr)
 **描述：**
 
 函数osMutexNew创建并初始化一个新的互斥锁对象，并返回指向互斥锁对象标识符的指针，如果出现错误则返回NULL可以在RTOS启动(调用 osKernelStart)之前安全地调用该函数，但不能在内核初始化 (调用 osKernelInitialize)之前调用该函数。
-> **注意** :不能在中断服务调用该函数
+> **注意** :不能在中断服务调用该函数。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| attr |互斥对象的属性.  |
+| attr |互斥对象的属性。  |
 
 ### osMutexAcquire()
 
@@ -30,15 +30,15 @@ osStatus_t osMutexAcquire(osMutexId_t mutex_id,uint32_t timeout)
 **描述：**
 函数osMutexAcquire一直等待，直到参数mutex_id指定的互斥对象可用为止。如果没有其余线程获得互斥锁，该函数立即返回并阻塞互斥锁对象。
 
-> **注意** :不能在中断服务调用该函数
+> **注意** :不能在中断服务调用该函数。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| mutex_id | 通过osMutexNew获得互斥锁ID.  |
-| timeout | 超时值.  |
+| mutex_id | 通过osMutexNew获得互斥锁ID。  |
+| timeout | 超时值。 |
 
 ###  osMutexRelease()
 
@@ -53,9 +53,9 @@ osStatus_t osMutexRelease(osMutexId_t mutex_id)
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| mutex_id | 通过osMutexNew获得互斥锁ID.  |
+| mutex_id | 通过osMutexNew获得互斥锁ID。  |
 
 
 ## 软件设计

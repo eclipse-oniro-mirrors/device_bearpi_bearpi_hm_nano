@@ -1,30 +1,29 @@
 # BearPi-HM_Nano开发板基础外设开发——GPIO输入
-本示例将演示如何在BearPi-HM_Nano开发板上使用GPIO输入功能去读取按键状态
+本示例将演示如何在BearPi-HM_Nano开发板上使用GPIO输入功能去读取按键状态。
 
-![BearPi-HM_Nano](../../docs/figures/00_public/BearPi-HM_Nano.png)
 ## GPIO API分析
-本案例主要使用了以下几个API完成GPIO输出功能
+本案例主要使用了以下几个API完成GPIO输出功能。
 ### IoTGpioInit()
 ```c
 unsigned int IoTGpioInit(unsigned int id);
 ```
  **描述：**
 
-初始化GPIO外设
+初始化GPIO外设。
 ### IoTGpioSetFunc()
 ```c
 unsigned int IoTGpioSetFunc(unsigned int id, unsigned char val);
 ```
 **描述：**
 
-设置GPIO引脚复用功能
+设置GPIO引脚复用功能。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| val | 表示GPIO复用功能 |
+| id | 表示GPIO引脚号。  |
+| val | 表示GPIO复用功能。 |
 
 ### IoTGpioSetDir()
 ```c
@@ -32,14 +31,14 @@ unsigned int IoTGpioSetDir(unsigned int id, IotGpioDir dir);
 ```
 **描述：**
 
-设置GPIO输出方向
+设置GPIO输出方向。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| dir | 表示GPIO输出方向.  |
+| id | 表示GPIO引脚号。  |
+| dir | 表示GPIO输出方向。  |
 
 
 ### IoSetPull()
@@ -48,14 +47,14 @@ unsigned int IoTGpioSetPull(unsigned int id, IotGpioPull val);
 ```
 **描述：**
 
-设备GPIO的上下拉方式
+设备GPIO的上下拉方式。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| val | 表示要设置的上拉或下拉.  |
+| id | 表示GPIO引脚号。  |
+| val | 表示要设置的上拉或下拉。  |
 
 
 ### IoTGpioRegisterIsrFunc()
@@ -69,13 +68,13 @@ unsigned int IoTGpioRegisterIsrFunc(unsigned int id, IotGpioIntType intType, Iot
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| intType| 表示中断类型.  |
-| intPolarity| 表示中断极性.  |
-| func| 表示中断回调函数.  |
-| arg| 表示中断回调函数中使用的参数的指针.  |
+| id | 表示GPIO引脚号。  |
+| intType| 表示中断类型。  |
+| intPolarity| 表示中断极性。 |
+| func| 表示中断回调函数.。  |
+| arg| 表示中断回调函数中使用的参数的指针。  |
 
 
 ## 硬件设计

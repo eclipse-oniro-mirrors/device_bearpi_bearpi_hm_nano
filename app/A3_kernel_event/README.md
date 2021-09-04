@@ -1,5 +1,5 @@
 # BearPi-HM_Nano开发板OpnenHarmony内核编程开发——事件标志
-本示例将演示如何在BearPi-HM_Nano开发板上使用cmsis 2.0 接口使用事件标志同步线程
+本示例将演示如何在BearPi-HM_Nano开发板上使用cmsis 2.0 接口使用事件标志同步线程。
 
 
 ## EventFlags API分析
@@ -13,12 +13,12 @@ osEventFlagsId_t osEventFlagsNew(const osEventFlagsAttr_t *attr)
 **描述：**
 
 osEventFlagsNew函数创建了一个新的事件标志对象，用于跨线程发送事件，并返回事件标志对象标识符的指针，或者在出现错误时返回NULL。可以在RTOS启动(调用 osKernelStart)之前安全地调用该函数，但不能在内核初始化 (调用 osKernelInitialize)之前调用该函数。
-> **注意** :不能在中断服务调用该函数
+> **注意** :不能在中断服务调用该函数。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
 | attr |事件标志属性;空:默认值.  |
 
@@ -30,15 +30,15 @@ uint32_t osEventFlagsSet(osEventFlagsId_t ef_id,uint32_t flags)
 **描述：**
 osEventFlagsSet函数在一个由参数ef_id指定的事件标记对象中设置由参数flags指定的事件标记。
 
-> **注意** :不能在中断服务调用该函数
+> **注意** :不能在中断服务调用该函数。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| ef_id | 事件标志由osEventFlagsNew获得的ID.  |
-| flags | 指定设置的标志.  |
+| ef_id | 事件标志由osEventFlagsNew获得的ID 。 |
+| flags | 指定设置的标志。 |
 
 ### osEventFlagsWait()
 
@@ -48,17 +48,17 @@ uint32_t osEventFlagsWait(osEventFlagsId_t ef_id,uint32_t flags,uint32_t options
 **描述：**
 osEventFlagsWait函数挂起当前运行线程，直到设置了由参数ef_id指定的事件对象中的任何或所有由参数flags指定的事件标志。当这些事件标志被设置，函数立即返回。否则，线程将被置于阻塞状态。
 
-> **注意** :如果参数timeout设置为0，可以从中断服务例程调用
+> **注意** :如果参数timeout设置为0，可以从中断服务例程调用。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| ef_id | 事件标志由osEventFlagsNew获得的ID.  |
-| flags | 指定要等待的标志.  |
-| options | 指定标记选项.  |
-| timeout | 超时时间，0表示不超时  |
+| ef_id | 事件标志由osEventFlagsNew获得的ID。  |
+| flags | 指定要等待的标志。 |
+| options | 指定标记选项。 |
+| timeout | 超时时间，0表示不超时。 |
 
 
 ## 软件设计

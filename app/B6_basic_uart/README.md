@@ -1,9 +1,8 @@
 # BearPi-HM_Nano开发板基础外设开发——UART数据读写
-本示例将演示如何在BearPi-HM_Nano开发板上使用UART进行数据的收发
+本示例将演示如何在BearPi-HM_Nano开发板上使用UART进行数据的收发。
 
-![BearPi-HM_Nano](../../docs/figures/00_public/BearPi-HM_Nano.png)
 ## UART API分析
-本示例主要使用了以下API完成UART数据读写
+本示例主要使用了以下API完成UART数据读写。
 ### IoTUartInit()
 ```c
 unsigned int IoTUartInit(unsigned int id, const IotUartAttribute *param);
@@ -14,10 +13,10 @@ unsigned int IoTUartInit(unsigned int id, const IotUartAttribute *param);
 配置一个UART设备。
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | UART端口号.  |
-| param |表示基本UART属性|
+| id | UART端口号。  |
+| param |表示基本UART属性。|
 
 ### IoTUartWrite()
 ```c
@@ -25,16 +24,16 @@ int IoTUartWrite(unsigned int id, const unsigned char *data, unsigned int dataLe
 
 ```
  **描述：**
-将数据写入UART设备
+将数据写入UART设备。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | UART端口号.  |
-| data |表示指向要写入数据的起始地址的指针|
-| dataLen |表示读取数据的长度|
+| id | UART端口号。  |
+| data |表示指向要写入数据的起始地址的指针。|
+| dataLen |表示读取数据的长度。|
 
 ### IoTUartRead()
 ```c
@@ -47,11 +46,11 @@ int IoTUartRead(unsigned int id, unsigned char *data, unsigned int dataLen);
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | UART端口号.  |
-| data |表示指向要读取数据的起始地址的指针|
-| dataLen |表示读取数据的长度|
+| id | UART端口号。  |
+| data |表示指向要读取数据的起始地址的指针。|
+| dataLen |表示读取数据的长度。|
 
 
 

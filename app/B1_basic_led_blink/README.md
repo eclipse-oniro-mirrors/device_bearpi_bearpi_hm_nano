@@ -1,31 +1,29 @@
 # BearPi-HM_Nano开发板基础外设开发——GPIO输出
 本示例将演示如何在BearPi-HM_Nano开发板上使用GPIO输出功能去点亮LED灯。
 
-![BearPi-HM_Nano](../../docs/figures/00_public/BearPi-HM_Nano.png)
-
 ## GPIO API分析
-本案例主要使用了以下几个API完成GPIO输出功能
+本案例主要使用了以下几个API完成GPIO输出功能。
 ### IoTGpioInit()
 ```c
 unsigned int IoTGpioInit(unsigned int id);
 ```
  **描述：**
 
-初始化GPIO外设
+初始化GPIO外设。
 ### IoTGpioSetFunc()
 ```c
 unsigned int IoTGpioSetFunc(unsigned int id, unsigned char val);
 ```
 **描述：**
 
-设置GPIO引脚复用功能
+设置GPIO引脚复用功能。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| val | 表示GPIO复用功能 |
+| id | 表示GPIO引脚号。  |
+| val | 表示GPIO复用功能。 |
 
 ### IoTGpioSetDir()
 ```c
@@ -33,14 +31,14 @@ unsigned int IoTGpioSetDir(unsigned int id, IotGpioDir dir);
 ```
 **描述：**
 
-设置GPIO输出方向
+设置GPIO输出方向。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| dir | 表示GPIO输出方向.  |
+| id | 表示GPIO引脚号。  |
+| dir | 表示GPIO输出方向。  |
 
 
 ## 硬件设计
@@ -52,7 +50,7 @@ unsigned int IoTGpioSetDir(unsigned int id, IotGpioDir dir);
 
 **主要代码分析**
 
-LedTask()为LED灯测试主任务，该任务先调用 IoTGpioInit()初始化GPIO，因为LED灯的控制引脚接在GPIO_2上，所以通过IoTGpioSetDir()将GPIO_2设置为普通GPIO的输出模式。最后在死循环里面间隔 1s 输出GPIO_2的高低电平，实现LED灯闪烁的现象
+LedTask()为LED灯测试主任务，该任务先调用 IoTGpioInit()初始化GPIO，因为LED灯的控制引脚接在GPIO_2上，所以通过IoTGpioSetDir()将GPIO_2设置为普通GPIO的输出模式。最后在死循环里面间隔 1s 输出GPIO_2的高低电平，实现LED灯闪烁的现象。
 ```c
 /**
  * @brief led task output high and low levels to turn on and off LED
@@ -101,6 +99,6 @@ static void LedTask(void)
 
 ### 运行结果
 
-示例代码编译烧录代码后，按下开发板的RESET按键，开发板的LED灯开始闪烁
+示例代码编译烧录代码后，按下开发板的RESET按键，开发板的LED灯开始闪烁。
 
 

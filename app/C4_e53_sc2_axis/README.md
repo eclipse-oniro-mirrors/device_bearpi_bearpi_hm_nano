@@ -1,24 +1,25 @@
 # BearPi-HM_Nano开发板传感器驱动开发——E53_SC2读取三轴加速度
-本示例将演示如何在BearPi-HM_Nano开发板上使用E53_SC2读取三轴加速度
+本示例将演示如何在BearPi-HM_Nano开发板上使用E53_SC2读取三轴加速度，设备安装如下图所示。
 
 
 ![](../../docs/figures/C4_e53_sc2_axis/E53_SC2安装.png "E53_SC2安装")
 ## E53_SC2 API分析
-本案例主要使用了以下API完成三轴加速度读取
+本案例主要使用了以下API完成三轴加速度读取。
 ### E53SC2Init()
 ```C
 int E53SC2Init(void);
 ```
  **描述：**
 
-初始化E53_SC2
+初始化E53_SC2。
 
 ### E53SC2ReadData()
 ```C
 int E53SC2ReadData(E53SC2Data *ReadData);
 ```
  **描述：**
-读取三轴加速度及温度
+ 
+读取三轴加速度及温度。
 
 
 
@@ -30,7 +31,7 @@ int E53SC2ReadData(E53SC2Data *ReadData);
 
 ![](../../docs/figures/C4_e53_sc2_axis/E53接口电路.png "E53接口电路")
 
-E53_SC2 智慧井盖扩展板与 BearPi-HM_Nano 开发板安装如下图所示
+E53_SC2 智慧井盖扩展板与 BearPi-HM_Nano 开发板安装如下图所示。
 
 ![](../../docs/figures/C4_e53_sc2_axis/E53_SC2安装.png "E53_SC2安装")
 ## 软件设计
@@ -38,7 +39,7 @@ E53_SC2 智慧井盖扩展板与 BearPi-HM_Nano 开发板安装如下图所示
 **主要代码分析**
 
 
-首先调用 `E53SC2Init()` 函数初始化E53_SC2所接的引脚的功能，然后循环调用 `E53SC2ReadData()` 函数读取三轴加速度并通过串口打印出来，设置第一次读出的三轴加速度为水平状态，当倾斜开发板后会点亮扩展板上倾斜倾斜状态的灯
+首先调用 `E53SC2Init()` 函数初始化E53_SC2所接的引脚的功能，然后循环调用 `E53SC2ReadData()` 函数读取三轴加速度并通过串口打印出来，设置第一次读出的三轴加速度为水平状态，当倾斜开发板后会点亮扩展板上倾斜倾斜状态的灯。
 
 ```C
 static void ExampleTask(void)

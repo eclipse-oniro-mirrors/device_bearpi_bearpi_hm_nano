@@ -1,30 +1,30 @@
 # BearPi-HM_Nano开发板基础外设开发——PWM输出
-本示例将演示如何在BearPi-HM_Nano开发板上使用GPIO的PWM功能实现呼吸灯的效果
+本示例将演示如何在BearPi-HM_Nano开发板上使用GPIO的PWM功能实现呼吸灯的效果。
 
-![BearPi-HM_Nano](../../docs/figures/00_public/BearPi-HM_Nano.png)
+
 ## PWM API分析
-本案例主要使用了以下几个API完成PWM功能实现呼吸灯功能
+本案例主要使用了以下几个API完成PWM功能实现呼吸灯功能。
 ### IoTGpioInit()
 ```c
 unsigned int IoTGpioInit(unsigned int id);
 ```
  **描述：**
 
-初始化GPIO外设
+初始化GPIO外设。
 ### IoTGpioSetFunc()
 ```c
 unsigned int IoTGpioSetFunc(unsigned int id, unsigned char val);
 ```
 **描述：**
 
-设置GPIO引脚复用功能
+设置GPIO引脚复用功能。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| val | 表示GPIO复用功能 |
+| id | 表示GPIO引脚号。  |
+| val | 表示GPIO复用功能。 |
 
 ### IoTGpioSetDir()
 ```c
@@ -32,14 +32,14 @@ unsigned int IoTGpioSetDir(unsigned int id, IotGpioDir dir);
 ```
 **描述：**
 
-设置GPIO输出方向
+设置GPIO输出方向。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| id | 表示GPIO引脚号.  |
-| dir | 表示GPIO输出方向.  |
+| id | 表示GPIO引脚号。  |
+| dir | 表示GPIO输出方向。  |
 
 
 ### IoTPwmInit()
@@ -47,13 +47,13 @@ unsigned int IoTGpioSetDir(unsigned int id, IotGpioDir dir);
 unsigned int IoTPwmInit(unsigned int port);
 ```
 **描述：**
-初始化PWM功能
+初始化PWM功能。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| port | 表示PWM设备端口号.  |
+| port | 表示PWM设备端口号。  |
 
 
 
@@ -67,11 +67,11 @@ unsigned int IoTPwmStart(unsigned int port, unsigned short duty, unsigned int fr
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| port | PWM端口号.  |
-| duty| 占空比.  |
-| freq| 分频倍数.  |
+| port | PWM端口号。  |
+| duty| 占空比。  |
+| freq| 分频倍数。  |
 
 
 ## 硬件设计
@@ -83,7 +83,7 @@ unsigned int IoTPwmStart(unsigned int port, unsigned short duty, unsigned int fr
 
 **主要代码分析**
 
-PWMTask()为PWM测试主任务，该任务先调用 IoTGpioInit()初始化GPIO，因为LED灯的控制引脚接在GPIO_2上，所以通过调用IoTGpioSetFunc()将GPIO_2复用为PWM功能，并通过IoTPwmInit()初始化PWM2端口，最后在死循环里面间隔10us输出不同占空比的PWM波，实现呼吸灯的效果
+PWMTask()为PWM测试主任务，该任务先调用 IoTGpioInit()初始化GPIO，因为LED灯的控制引脚接在GPIO_2上，所以通过调用IoTGpioSetFunc()将GPIO_2复用为PWM功能，并通过IoTPwmInit()初始化PWM2端口，最后在死循环里面间隔10us输出不同占空比的PWM波，实现呼吸灯的效果。
 ```c
 /**
  * @brief pwm task output PWM with different duty cycle

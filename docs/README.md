@@ -9,13 +9,14 @@
 
 ## 一、BearPi-HM Nano 开发板介绍
 
-小熊派·季[（BearPi-HM Nano）](https://item.taobao.com/item.htm?id=633296694816)是一款由小熊派专为OpenHarmony系统打造的开发板。
+小熊派·季[（BearPi-HM Nano）](https://item.taobao.com/item.htm?id=633296694816)是一款由小熊派专为OpenHarmony系统打造的开发板，如下图所示
 
 * 采用IoTCluB的E53接口标准，可接入所有的[E53案例扩展板](https://shop336827451.taobao.com/category-1488778768.htm)。
-* 主控为WiFi SOC Hi3861，160MHz主频，SRAM 352KB、ROM 288KB、2M Flash。
+* 主控为WiFi SoC Hi3861，160MHz主频，SRAM 352KB、ROM 288KB、2M Flash。
 * 板载NFC Forum Type 2 Tag芯片及天线，可实现OpenHarmony“碰一碰”功能。
 * 一根TypeC USB线，即可实现供电、下载、调试等多种功能。
 
+[![](figures/00_public/BearPi-HM_Nano_Info.png)](https://item.taobao.com/item.htm?id=633296694816)
 
 ## 二、快速上手（十分钟上手）
 
@@ -120,13 +121,7 @@ BearPi-HM Nano提供多个案例，案例以A、B、C、D进行不同类别进�
 
 
 
-
-## 五、开发板图片预览[（淘宝链接）](https://item.taobao.com/item.htm?id=633296694816)
-
-[![](figures/00_public/BearPi-HM_Nano_Info.png)](https://item.taobao.com/item.htm?id=633296694816)
-
-
-## 六、联系我们
+## 五、联系我们
 
 
 

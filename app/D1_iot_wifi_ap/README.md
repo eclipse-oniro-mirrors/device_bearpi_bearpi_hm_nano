@@ -1,32 +1,35 @@
 # BearPi-HM_Nano开发板WiFi编程开发——Wifi AP 热点
 
 
-本示例将演示如何在BearPi-HM_Nano开发板上编写一个创建Wifi热点程序
+本示例将演示如何在BearPi-HM_Nano开发板上编写一个创建Wifi热点程序。
 
 
 ## Wifi API分析
-本案例主要使用了以下几个API完成Wifi热点创建
+本案例主要使用了以下几个API完成Wifi热点创建。
 
 ### RegisterWifiEvent()
 ```c
 WifiErrorCode RegisterWifiEvent (WifiEvent * event)
 ```
  **描述：**
-为指定的Wi-Fi事件注册回调函数。当WifiEvent中定义的Wi-Fi事件发生时，将调用已注册的回调函数
+
+为指定的Wi-Fi事件注册回调函数。当WifiEvent中定义的Wi-Fi事件发生时，将调用已注册的回调函数。
+
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| event | 表示要注册回调的事件.  |
+| event | 表示要注册回调的事件。  |
 
 
 ### EnableHotspot()
 ```c
 WifiErrorCode EnableHotspot (void )
 ```
+
 **描述：**
 
-启用Wifi热点模式
+启用Wifi热点模式。
 
 ### SetHotspotConfig()
 ```c
@@ -34,14 +37,15 @@ WifiErrorCode SetHotspotConfig(const HotspotConfig* config)
 ```
 **描述：**
 
-设置指定的热点配置
+设置指定的热点配置。
 
 ### IsHotspotActive()
 ```c
 int IsHotspotActive(void);
 ```
 **描述：**
-检查AP热点模式是否启用
+
+检查AP热点模式是否启用。
 
 ### GetStationList()
 ```c
@@ -49,14 +53,14 @@ WifiErrorCode GetStationList(StationInfo* result, unsigned int* size)
 ```
 **描述：**
 
-获取连接到该热点的一系列STA
+获取连接到该热点的一系列STA。
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| result | 表示连接到该热点的STA列表.  |
-| size | 表示连接到该热点的STA数量  |
+| result | 表示连接到该热点的STA列表。  |
+| size | 表示连接到该热点的STA数量。  |
 
 
 
@@ -64,21 +68,21 @@ WifiErrorCode GetStationList(StationInfo* result, unsigned int* size)
 
 **主要代码分析**
 
-完成Wifi热点的扫描需要以下几步
+完成Wifi热点的扫描需要以下几步。
 
-1. 通过 `RegisterWifiEvent` 接口向系统注册热点状态改变事件、STA站点加入事件、STA站点退出事件
+1. 通过 `RegisterWifiEvent` 接口向系统注册热点状态改变事件、STA站点加入事件、STA站点退出事件。
     
-    * `OnHotspotStateChangedHandler` 用于绑定热点状态改变事件，该回调函数有一个参数 `state` ；
+    * `OnHotspotStateChangedHandler` 用于绑定热点状态改变事件，该回调函数有一个参数 `state` 。
 
-        * state表示是否开启AP模式，取值为0和1，0表示已启用Wifi AP模式，1表示已禁用Wifi AP模式；
+        * state表示是否开启AP模式，取值为0和1，0表示已启用Wifi AP模式，1表示已禁用Wifi AP模式。
 
-    * `OnHotspotStaLeaveHandler` 用于绑定STA站点退出事件,当有STA站点退出，该回调函数会打印出退出站点的MAC地址；
-    * `OnHotspotStaJoinHandler` 用于绑定STA站点加入事件，当有新的STA站点加入时，该回调函数会创建 `HotspotStaJoinTask`，在该任务中会调用 `GetStationList` 函数获取当前接入到该AP的所有STA站点信息，并打印出每个STA站点的MAC地址；
-2. 调用 `SetHotspotConfig` 接口，设置指定的热点配置；
-3. 调用 `EnableHotspot` 接口，使能 Wifi AP 模式；
-4. 调用 `IsHotspotActive` 接口，检查AP热点模式是否启用；
-5. 调用 `netifapi_netif_set_addr` 函数设置网卡信息；
-6. 调用 `netifapi_dhcps_start` 函数启动dhcp服务；
+    * `OnHotspotStaLeaveHandler` 用于绑定STA站点退出事件,当有STA站点退出，该回调函数会打印出退出站点的MAC地址。
+    * `OnHotspotStaJoinHandler` 用于绑定STA站点加入事件，当有新的STA站点加入时，该回调函数会创建 `HotspotStaJoinTask`，在该任务中会调用 `GetStationList` 函数获取当前接入到该AP的所有STA站点信息，并打印出每个STA站点的MAC地址。
+2. 调用 `SetHotspotConfig` 接口，设置指定的热点配置。
+3. 调用 `EnableHotspot` 接口，使能 Wifi AP 模式。
+4. 调用 `IsHotspotActive` 接口，检查AP热点模式是否启用。
+5. 调用 `netifapi_netif_set_addr` 函数设置网卡信息。
+6. 调用 `netifapi_dhcps_start` 函数启动dhcp服务。
     
 ```c
 static BOOL WifiAPTask(void)

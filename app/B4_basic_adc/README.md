@@ -1,9 +1,8 @@
 # BearPi-HM_Nano开发板基础外设开发——ADC采样
-本示例将演示如何在BearPi-HM_Nano开发板上通过按下按键改变GPIO口的电压，并使用ADC读取GPIO的电压值，
+本示例将演示如何在BearPi-HM_Nano开发板上通过按下按键改变GPIO口的电压，并使用ADC读取GPIO的电压值。
 
-![BearPi-HM_Nano](../../docs/figures/00_public/BearPi-HM_Nano.png)
 ## ADC API分析
-本案例主要使用了以下API完成ADC采样的功能
+本案例主要使用了以下API完成ADC采样的功能。
 ### IoTAdcRead()
 ```c
 unsigned int IoTAdcRead(unsigned int channel, unsigned short *data, IotAdcEquModelSel equModel,
@@ -11,18 +10,18 @@ unsigned int IoTAdcRead(unsigned int channel, unsigned short *data, IotAdcEquMod
 ```
  **描述：**
 
-根据输入参数从指定的ADC通道读取一段采样数据
+根据输入参数从指定的ADC通道读取一段采样数据。
 
 
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| channel | 表示ADC通道.  |
-| data |表示指向存储读取数据的地址的指针 |
-| equModel | 表示平均算法的次数 |
-| curBais | 表示模拟功率控制模式 |
-| rstCnt | 指示从重置到转换开始的时间计数。一次计数等于334纳秒。值的范围必须从0到0xFF|
+| channel | 表示ADC通道。  |
+| data |表示指向存储读取数据的地址的指针。 |
+| equModel | 表示平均算法的次数。 |
+| curBais | 表示模拟功率控制模式。 |
+| rstCnt | 指示从重置到转换开始的时间计数。一次计数等于334纳秒。值的范围必须从0到0xFF。|
 
 
 

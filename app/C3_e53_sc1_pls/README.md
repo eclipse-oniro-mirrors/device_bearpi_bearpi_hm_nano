@@ -1,28 +1,30 @@
 # BearPi-HM_Nano开发板传感器驱动开发——E53_SC1读取光照强度
-本示例将演示如何在BearPi-HM_Nano开发板上使用E53_SC1读取温度 、湿度、光照强度，当光照强度过低时，开启补光灯补光。
+本示例将演示如何在BearPi-HM_Nano开发板上使用E53_SC1读取温度 、湿度、光照强度，当光照强度过低时，开启补光灯补光，设备安装如下图所示。
 
 ![E53_SC1安装](../../docs/figures/C3_e53_sc1_pls/E53_SC1安装.png "E53_SC1安装")
 ## E53_SC1 API分析
-本案例主要使用了以下API完成温度 、湿度、光照强度读取
+本案例主要使用了以下API完成温度 、湿度、光照强度读取。
 ### E53SC1Init()
 ```C
 int E53SC1Init(void);
 ```
  **描述：**
 
-初始化E53_SC1
+初始化E53_SC1。
 
 ### E53SC1ReadData()
 ```C
 int E53SC1ReadData(float *data);
 ```
  **描述：**
-读取光照强度
+
+读取光照强度。
+
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| data | data,光照强度数据指针 |
+| data | data,光照强度数据指针。 |
 
 ### LightStatusSet()
 ```C
@@ -31,11 +33,12 @@ void LightStatusSet(E53SC1Status status);
  **描述：**
 
 控制补光灯开关
+
 **参数：**
 
-|名字|描述|
+|参数名|描述|
 |:--|:------| 
-| status | ON开，OFF关闭.  |
+| status | ON开，OFF关闭。  |
 
 
 
@@ -46,7 +49,7 @@ void LightStatusSet(E53SC1Status status);
 
 ![E53接口电路](../../docs/figures/C3_e53_sc1_pls/E53接口电路.png "E53接口电路")
 
-E53_SC1 智慧路灯扩展板与 BearPi-HM_Nano 开发板安装如下图所示
+E53_SC1 智慧路灯扩展板与 BearPi-HM_Nano 开发板安装如下图所示。
 
 ![E53_SC1安装](../../docs/figures/C3_e53_sc1_pls/E53_SC1安装.png "E53_SC1安装")
 ## 软件设计
@@ -54,7 +57,7 @@ E53_SC1 智慧路灯扩展板与 BearPi-HM_Nano 开发板安装如下图所示
 **主要代码分析**
 
 
-首先调用 `E53SC1Init()` 函数初始化E53_SC1所接的引脚的功能，然后循环调用 `E53SC1ReadData()` 函数读取光照强度并通过串口打印出来，当光照强度过低时，开启灯
+首先调用 `E53SC1Init()` 函数初始化E53_SC1所接的引脚的功能，然后循环调用 `E53SC1ReadData()` 函数读取光照强度并通过串口打印出来，当光照强度过低时，开启灯。
 
 ```C
 static void ExampleTask(void)
