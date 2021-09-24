@@ -8,14 +8,14 @@ bugfix和新增业务两种情况，涉及源码修改。下面以新增业务�
 
 1.  <a name="li5479332115116"></a>确定目录结构。
 
-    开发者编写业务时，务必先在./applications/sample/bearpi_hm_nano/app路径下新建一个目录（或一套目录结构），用于存放业务源码文件。
+    开发者编写业务时，务必先在./device/bearpi/bearpi_hm_nano/app路径下新建一个目录（或一套目录结构），用于存放业务源码文件。
 
     例如：在app下新增业务my\_first\_app，其中hello\_world.c为业务代码，BUILD.gn为编译脚本，具体规划目录结构如下：
 
     ```
     .
-    └── applications        
-        └── sample
+    └── device        
+        └── bearpi
             └── bearpi_hm_nano
                 └── app
                     │── my_first_app
@@ -41,8 +41,7 @@ bugfix和新增业务两种情况，涉及源码修改。下面以新增业务�
 
 3.  编写用于将业务构建成静态库的BUILD.gn文件。
 
-    如[步骤1](#li5479332115116)所述，BUILD.gn文件由三部分内容（目标、源文件、头文件路径）构成，需由开发者完成填写。以my\_first\_app为例，需要创建./applications/sample/bearpi_hm_nano/app/my\_first\_app/BUILD.gn，并完如下配置。
-
+    如[步骤1](#li5479332115116)所述，BUILD.gn文件由三部分内容（目标、源文件、头文件路径）构成，需由开发者完成填写。以my\_first\_app为例，需要创建./device/bearpi/bearpi_hm_nano/app/my\_first\_app/BUILD.gn，并完如下配置。
     ```
     static_library("myapp") {
         sources = [
@@ -60,7 +59,7 @@ bugfix和新增业务两种情况，涉及源码修改。下面以新增业务�
 
 4.  编写模块BUILD.gn文件，指定需参与构建的特性模块。
 
-    配置`./applications/sample/bearpi_hm_nano/app/BUILD.gn`文件，在features字段中增加索引`"my_first_app:myapp"`，使目标模块参与编译。并屏蔽其余模块。
+    配置`./device/bearpi/bearpi_hm_nano/app/BUILD.gn`文件，在features字段中增加索引`"my_first_app:myapp"`，使目标模块参与编译。并屏蔽其余模块。
 
     ```
         #"D1_iot_wifi_scan:wifi_scan",
@@ -74,8 +73,8 @@ bugfix和新增业务两种情况，涉及源码修改。下面以新增业务�
         "my_first_app:myapp"
     ```
 
-    -   my\_first\_app是相对路径，指向`./applications/sample/bearpi_hm_nano/app/my_first_app/BUILD.gn`。
-    -   myapp是目标，指向 `./applications/sample/bearpi_hm_nano/app/my_first_app/BUILD.gn` 中的static\_library\("myapp"\)。
+    -   my\_first\_app是相对路径，指向`./device/bearpi/bearpi_hm_nano/app/my_first_app/BUILD.gn`。
+    -   myapp是目标，指向 `./device/bearpi/bearpi_hm_nano/app/my_first_app/BUILD.gn` 中的static\_library\("myapp"\)。
 
 
 ## 运行结果<a name="section18115713118"></a>

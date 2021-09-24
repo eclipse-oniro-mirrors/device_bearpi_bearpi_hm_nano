@@ -43,7 +43,7 @@ static int g_staScanSuccess = 0;
 static int g_connectSuccess = 0;
 static int g_ssid_count = 0;
 static struct netif* g_lwip_netif = NULL;
-WifiEvent g_wifiEventHandler = {0};
+static WifiEvent g_wifiEventHandler = {0};
 WifiErrorCode error;
 
 #define SELECT_WLAN_PORT "wlan0"

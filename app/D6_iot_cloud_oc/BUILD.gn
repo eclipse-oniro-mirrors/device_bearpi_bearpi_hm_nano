@@ -29,14 +29,9 @@ static_library("oc_mqtt") {
         "//device/bearpi/bearpi_hm_nano/iot_hardware_hals/include",
         "//foundation/communication/wifi_lite/interfaces/wifiservice",
         "//third_party/cJSON",
-        "//third_party/paho_mqtt/MQTTPacket/src",
-        "//third_party/paho_mqtt/MQTTClient-C/src",
-        "//third_party/paho_mqtt/MQTTClient-C/src/liteOS",
-        "//third_party/paho_mqtt/MQTTPacket/samples",
         "include"
     ]
     deps = [ 
-             "//third_party/paho_mqtt:pahomqtt_static",
+             "../../sdk_liteos/third_party/paho_mqtt:pahomqtt_static",
     ]
-
 }

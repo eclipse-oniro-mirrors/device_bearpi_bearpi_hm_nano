@@ -25,6 +25,6 @@ static_library("iot_mqtt") {
         "wifi"
     ]
     deps = [
-             "//third_party/paho_mqtt:pahomqtt_static",
+             "../../sdk_liteos/third_party/paho_mqtt:pahomqtt_static",
     ]
 }

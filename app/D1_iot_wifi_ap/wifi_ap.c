@@ -38,7 +38,7 @@ static void OnHotspotStaLeaveHandler(StationInfo *info);
 
 static struct netif *g_lwip_netif = NULL;
 static int g_apEnableSuccess = 0;
-WifiEvent g_wifiEventHandler = {0};
+static WifiEvent g_wifiEventHandler = {0};
 WifiErrorCode error;
 
 static BOOL WifiAPTask(void)
