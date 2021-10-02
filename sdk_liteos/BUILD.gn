@@ -1,14 +1,13 @@
 # Copyright (c) Huawei Technologies Co., Ltd. 2020. All rights reserved.
 
 import("//build/lite/config/component/lite_component.gni")
-import("//build/lite/config/subsystem/lite_subsystem.gni")
 
 declare_args() {
   enable_hos_vendor_wifiiot_xts = false
 }
 
-lite_subsystem("wifiiot_sdk") {
-  subsystem_components = [ ":sdk" ]
+group("wifiiot_sdk") {
+  deps = [ ":sdk" ]
 }
 
 build_ext_component("run_wifiiot_scons") {
