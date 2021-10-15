@@ -18,7 +18,6 @@ group("iot_link") {
         "link_misc:link_misc",
         "network/dtls:dtls",
         "network/mqtt:mqtt",
-        "oc_mqtt:oc_mqtt",
-        "queue:queue"
+        "oc_mqtt:oc_mqtt"
     ]
 }

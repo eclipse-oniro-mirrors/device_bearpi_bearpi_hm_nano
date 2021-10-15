@@ -26,7 +26,6 @@
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include <queue.h>
 
 #define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
 
@@ -71,7 +70,7 @@ typedef struct {
 } app_msg_t;
 
 typedef struct {
-    queue_t* app_msg;
+    osMessageQueueId_t app_msg;
     int connected;
 
 } app_cb_t;
@@ -136,7 +135,7 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = queue_create("queue_rcvmsg", 10, 1);
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, 10, NULL);
     if (NULL == g_app_cb.app_msg) {
         printf("Create receive msg queue failed");
     }
@@ -161,7 +160,7 @@ static int CloudMainTaskEntry(void)
 
     while (1) {
         app_msg = NULL;
-        (void)queue_pop(g_app_cb.app_msg, (void**)&app_msg, 0xFFFFFFFF);
+        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL,0xFFFFFFFF);
         if (NULL != app_msg) {
             switch (app_msg->msg_type) {
                 case en_msg_report:
@@ -224,7 +223,7 @@ static int SensorTaskEntry(void)
             app_msg->msg.report.acce_y = (int)data.Accel[1];
             app_msg->msg.report.acce_z = (int)data.Accel[2];
 
-            if (0 != queue_push(g_app_cb.app_msg, app_msg, CONFIG_QUEUE_TIMEOUT)) {
+            if (0 != osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT)) {
                 free(app_msg);
             }
         }

@@ -49,8 +49,6 @@
 #include <link_misc.h>
 #include <time.h>
 #include "cmsis_os2.h"
-#include <queue.h>
-// #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 
 #include  <link_log.h>
@@ -172,7 +170,7 @@ typedef struct
     }flag;
     oc_bs_mqtt_cb_t     bs_cb;
     void               *task_daemon;                ///< oc mqtt lite daemon task
-    queue_t            *task_daemon_cmd_queue;      ///< oc mqtt lite daemon task command queue
+    osMessageQueueId_t  task_daemon_cmd_queue;      ///< oc mqtt lite daemon task command queue
     char                salt_time[16];              ///< salt time for the connect
     char               *hub_sub_topic[CN_NEW_TOPIC_NUM];
     tiny_topic_sub_t   *subscribe_lst;
@@ -331,7 +329,7 @@ static int daemon_cmd_post(en_oc_mqtt_daemon_cmd cmd, void *arg)
         daemon_cmd->signal = osSemaphoreNew(1, 0, NULL);
         if (daemon_cmd->signal != NULL)
         {
-            if(0 == queue_push(s_oc_mqtt_tiny_cb->task_daemon_cmd_queue,daemon_cmd,10))
+            if(0 == osMessageQueuePut(s_oc_mqtt_tiny_cb->task_daemon_cmd_queue,&daemon_cmd,NULL,10))
             {
                 (void)osSemaphoreAcquire(daemon_cmd->signal,osWaitForever);
                 ret = daemon_cmd->retcode;
@@ -1123,7 +1121,7 @@ static int daemon_entry(void *arg)
     cb = arg;
     while((NULL != cb) && (0 == cb->daemon_exit))
     {
-        if(0 == queue_pop(cb->task_daemon_cmd_queue,(void **)&daemon_cmd,10*1000))
+        if(0 == osMessageQueueGet(cb->task_daemon_cmd_queue, (void **)&daemon_cmd, NULL, 10*1000))
         {
             switch (daemon_cmd->cmd)             ///< execute the command here
             {
@@ -1413,7 +1411,7 @@ int oc_mqtt_imp_init(void)
     }
     (void) memset(cb,0,sizeof(oc_mqtt_tiny_cb_t));
 
-    cb->task_daemon_cmd_queue = queue_create("daemon_cmd_queue",10,1);
+    cb->task_daemon_cmd_queue = osMessageQueueNew(16,10,NULL);
     if(NULL == cb->task_daemon_cmd_queue)
     {
         goto EXIT_QUEUE;
@@ -1447,7 +1445,7 @@ EXIT_REGISTER:
     cb->task_daemon = NULL;
 
 EXIT_TASK:
-    (void) queue_delete(cb->task_daemon_cmd_queue);
+    (void) osMessageQueueDelete(cb->task_daemon_cmd_queue);
     cb->task_daemon_cmd_queue = NULL;
 
 EXIT_QUEUE:

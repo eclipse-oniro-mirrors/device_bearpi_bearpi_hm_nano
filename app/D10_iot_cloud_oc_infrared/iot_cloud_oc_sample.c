@@ -25,7 +25,6 @@
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include <queue.h>
 
 #define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
 
@@ -56,7 +55,7 @@ typedef struct {
 } cmd_t;
 
 typedef struct {
-    queue_t* app_msg;
+    osMessageQueueId_t app_msg;
     int connected;
 } app_cb_t;
 static app_cb_t g_app_cb;
@@ -103,7 +102,7 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = queue_create("queue_rcvmsg", 10, 1);
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, 10, NULL);
     if (NULL == g_app_cb.app_msg) {
         printf("Create receive msg queue failed");
     }
