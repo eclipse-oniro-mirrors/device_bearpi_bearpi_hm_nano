@@ -42,7 +42,10 @@
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_OBJECTS 16 // number of Message Queue Objects
+#define MSGQUEUE_COUNT 16 
+#define MSGQUEUE_SIZE 10 
+#define CLOUD_TASK_STACK_SIZE 1024*10
+#define CLOUD_TASK_PRIO 24
 
 typedef enum {
     en_msg_cmd = 0,
@@ -102,7 +105,7 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, 10, NULL);
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
     if (NULL == g_app_cb.app_msg) {
         printf("Create receive msg queue failed");
     }
@@ -160,8 +163,8 @@ static void IotMainTaskEntry(void)
     attr.cb_mem = NULL;
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
-    attr.stack_size = 10240;
-    attr.priority = 24;
+    attr.stack_size = CLOUD_TASK_STACK_SIZES;
+    attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create CloudMainTaskEntry!\n");

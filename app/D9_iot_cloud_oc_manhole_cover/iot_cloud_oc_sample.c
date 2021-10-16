@@ -43,7 +43,21 @@
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_OBJECTS 16 // number of Message Queue Objects
+#define MSGQUEUE_COUNT 16 
+#define MSGQUEUE_SIZE 10 
+#define CLOUD_TASK_STACK_SIZE 1024*10
+#define CLOUD_TASK_PRIO 24
+#define SENSOR_TASK_STACK_SIZE 1024*4
+#define SENSOR_TASK_PRIO 25
+#define TASK_DELAY 3
+#define FLIP_THRESHOLD 100
+
+enum AccelAxisNum {
+    ACCEL_X_AXIS   = 0,
+    ACCEL_Y_AXIS   = 1,
+    ACCEL_Z_AXIS   = 2,
+    ACCEL_AXIS_NUM = 3,
+};
 
 typedef enum {
     en_msg_cmd = 0,
@@ -135,7 +149,7 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, 10, NULL);
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
     if (NULL == g_app_cb.app_msg) {
         printf("Create receive msg queue failed");
     }
@@ -194,16 +208,17 @@ static int SensorTaskEntry(void)
             return;
         }
         printf("\r\n******************************Temperature      is  %d\r\n", (int)data.Temperature);
-        printf("\r\n******************************Accel[0]         is  %d\r\n", (int)data.Accel[0]);
-        printf("\r\n******************************Accel[1]         is  %d\r\n", (int)data.Accel[1]);
-        printf("\r\n******************************Accel[2]         is  %d\r\n", (int)data.Accel[2]);
+        printf("\r\n******************************Accel[ACCEL_X_AXIS] is  %d\r\n", (int)data.Accel[ACCEL_X_AXIS]);
+        printf("\r\n******************************Accel[ACCEL_Y_AXIS] is  %d\r\n", (int)data.Accel[ACCEL_Y_AXIS]);
+        printf("\r\n******************************Accel[ACCEL_Z_AXIS] is  %d\r\n", (int)data.Accel[ACCEL_Z_AXIS]);
         if (X == 0 && Y == 0 && Z == 0) {
-            X = (int)data.Accel[0];
-            Y = (int)data.Accel[1];
-            Z = (int)data.Accel[2];
+            X = (int)data.Accel[ACCEL_X_AXIS];
+            Y = (int)data.Accel[ACCEL_Y_AXIS];
+            Z = (int)data.Accel[ACCEL_Z_AXIS];
         } else {
-            if (X + 100 < data.Accel[0] || X - 100 > data.Accel[0] || Y + 100 < data.Accel[1] ||
-                Y - 100 > data.Accel[1] || Z + 100 < data.Accel[2] || Z - 100 > data.Accel[2]) {
+            if (X + FLIP_THRESHOLD < data.Accel[ACCEL_X_AXIS] || X - FLIP_THRESHOLD > data.Accel[ACCEL_X_AXIS] 
+                || Y + FLIP_THRESHOLD < data.Accel[ACCEL_Y_AXIS] || Y - FLIP_THRESHOLD > data.Accel[ACCEL_Y_AXIS] 
+                || Z + FLIP_THRESHOLD < data.Accel[ACCEL_Z_AXIS] || Z - FLIP_THRESHOLD > data.Accel[ACCEL_Z_AXIS]) {
                 LedD1StatusSet(OFF);
                 LedD2StatusSet(ON);
                 g_coverStatus = 1;
@@ -227,7 +242,7 @@ static int SensorTaskEntry(void)
                 free(app_msg);
             }
         }
-        sleep(3);
+        sleep(TASK_DELAY);
     }
     return 0;
 }
@@ -241,14 +256,14 @@ static void IotMainTaskEntry(void)
     attr.cb_mem = NULL;
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
-    attr.stack_size = 10240;
-    attr.priority = 24;
+    attr.stack_size = CLOUD_TASK_STACK_SIZE;
+    attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create CloudMainTaskEntry!\n");
     }
-    attr.stack_size = 4096;
-    attr.priority = 25;
+    attr.stack_size = SENSOR_TASK_STACK_SIZE;
+    attr.priority = SENSOR_TASK_PRIO;
     attr.name = "SensorTaskEntry";
     if (osThreadNew((osThreadFunc_t)SensorTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create SensorTaskEntry!\n");

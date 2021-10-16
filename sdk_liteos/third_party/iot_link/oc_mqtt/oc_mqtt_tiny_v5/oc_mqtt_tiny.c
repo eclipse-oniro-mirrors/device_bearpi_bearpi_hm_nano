@@ -329,7 +329,7 @@ static int daemon_cmd_post(en_oc_mqtt_daemon_cmd cmd, void *arg)
         daemon_cmd->signal = osSemaphoreNew(1, 0, NULL);
         if (daemon_cmd->signal != NULL)
         {
-            if(0 == osMessageQueuePut(s_oc_mqtt_tiny_cb->task_daemon_cmd_queue,&daemon_cmd,NULL,10))
+            if(osMessageQueuePut(s_oc_mqtt_tiny_cb->task_daemon_cmd_queue,&daemon_cmd,NULL,10 == 0))
             {
                 (void)osSemaphoreAcquire(daemon_cmd->signal,osWaitForever);
                 ret = daemon_cmd->retcode;
@@ -695,7 +695,7 @@ static int dmp_connect(oc_mqtt_tiny_cb_t *cb)
 
     LINK_LOG_DEBUG("oc_mqtt_connect:server:%s port:%s",cb->mqtt_para.server_addr,cb->mqtt_para.server_port);
     LINK_LOG_DEBUG("oc_mqtt_connect:client_id:%s",cb->mqtt_para.mqtt_clientid);
-    LINK_LOG_DEBUG("oc_mqtt_connect:user:%s passwd:%s",cb->mqtt_para.mqtt_user,(cb->mqtt_para.mqtt_passwd==NULL)?"NULL":cb->mqtt_para.mqtt_passwd);
+    LINK_LOG_DEBUG("oc_mqtt_connect:user:%s passwd:%s", cb->mqtt_para.mqtt_user, (cb->mqtt_para.mqtt_passwd==NULL)?"NULL":cb->mqtt_para.mqtt_passwd);
     cb->mqtt_para.mqtt_handle = mqtt_al_connect(&conpara);
 
     if(NULL != cb->mqtt_para.mqtt_handle)
@@ -1055,7 +1055,7 @@ static int deal_api_unsubscribe( oc_mqtt_tiny_cb_t  *cb, oc_mqtt_daemon_cmd_t *c
             topic_sub = cb->subscribe_lst;
             if(NULL != topic_sub)
             {
-                if  ( 0 == strcmp( unsubpara->topic.data, topic_sub->topic ))
+                if  (strcmp( unsubpara->topic.data, topic_sub->topic == 0))
                 {
                     cb->subscribe_lst = topic_sub->nxt;
                     free(topic_sub);
@@ -1065,7 +1065,7 @@ static int deal_api_unsubscribe( oc_mqtt_tiny_cb_t  *cb, oc_mqtt_daemon_cmd_t *c
                     topic_sub_nxt = topic_sub->nxt;
                     while( NULL != topic_sub_nxt )
                     {
-                        if ( 0 == strcmp( unsubpara->topic.data, topic_sub_nxt->topic))
+                        if (strcmp( unsubpara->topic.data, topic_sub_nxt->topic == 0))
                         {
                             topic_sub->nxt = topic_sub_nxt->nxt;
                             free(topic_sub_nxt);
@@ -1121,7 +1121,7 @@ static int daemon_entry(void *arg)
     cb = arg;
     while((NULL != cb) && (0 == cb->daemon_exit))
     {
-        if(0 == osMessageQueueGet(cb->task_daemon_cmd_queue, (void **)&daemon_cmd, NULL, 10*1000))
+        if(osMessageQueueGet(cb->task_daemon_cmd_queue, (void **)&daemon_cmd, NULL, 10*1000 == 0))
         {
             switch (daemon_cmd->cmd)             ///< execute the command here
             {

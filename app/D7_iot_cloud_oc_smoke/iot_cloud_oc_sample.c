@@ -43,7 +43,14 @@
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_OBJECTS 16 // number of Message Queue Objects
+#define MSGQUEUE_COUNT 16 
+#define MSGQUEUE_SIZE 10 
+#define CLOUD_TASK_STACK_SIZE 1024*10
+#define CLOUD_TASK_PRIO 24
+#define SENSOR_TASK_STACK_SIZE 1024*4
+#define SENSOR_TASK_PRIO 25
+#define TASK_DELAY 3
+#define CHECK_DELAY 1
 
 typedef enum {
     en_msg_cmd = 0,
@@ -210,7 +217,7 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_OBJECTS, 10, NULL);
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
     if (NULL == g_app_cb.app_msg) {
         printf("Create receive msg queue failed");
     }
@@ -259,7 +266,7 @@ static int SensorTaskEntry(void)
     float ppm;
     E53SF1Init();
     /****传感器校准****/
-    usleep(1000000);       // 开机1s后进行校准
+    sleep(CHECK_DELAY);   // 开机1s后进行校准
     MQ2PPMCalibration(); // 校准传感器
     while (1) {
         ret = GetMQ2PPM(&ppm);
@@ -276,7 +283,7 @@ static int SensorTaskEntry(void)
                 free(app_msg);
             }
         }
-        sleep(3);
+        sleep(TASK_DELAY);
     }
     return 0;
 }
@@ -290,14 +297,14 @@ static void IotMainTaskEntry(void)
     attr.cb_mem = NULL;
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
-    attr.stack_size = 10240;
-    attr.priority = 24;
+    attr.stack_size = CLOUD_TASK_STACK_SIZE;
+    attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create CloudMainTaskEntry!\n");
     }
-    attr.stack_size = 4096;
-    attr.priority = 25;
+    attr.stack_size = SENSOR_TASK_STACK_SIZE;
+    attr.priority = SENSOR_TASK_PRIO;
     attr.name = "SensorTaskEntry";
     if (osThreadNew((osThreadFunc_t)SensorTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create SensorTaskEntry!\n");
