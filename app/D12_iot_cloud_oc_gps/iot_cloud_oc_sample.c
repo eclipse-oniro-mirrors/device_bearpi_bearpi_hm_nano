@@ -43,7 +43,7 @@
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
 #define MSGQUEUE_COUNT  16 
-#define MSGQUEUE_SIZE  10 
+#define MSGQUEUE_SIZE   10 
 #define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
 #define SENSOR_TASK_STACK_SIZE (1024 * 4)
@@ -222,7 +222,7 @@ static int CloudMainTaskEntry(void)
     oc_mqtt_init();
 
     g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
-    if (NULL == g_app_cb.app_msg) {
+    if (g_app_cb.app_msg == NULL) {
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
@@ -245,7 +245,7 @@ static int CloudMainTaskEntry(void)
     }
     while (1) {
         app_msg = NULL;
-        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL,0xFFFFFFFF);
+        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL, 0xFFFFFFFF);
         if (app_msg != NULL) {
             switch (app_msg->msg_type) {
                 case en_msg_cmd:

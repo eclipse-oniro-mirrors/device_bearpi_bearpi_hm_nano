@@ -151,7 +151,7 @@ static int CloudMainTaskEntry(void)
     oc_mqtt_init();
 
     g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
-    if (NULL == g_app_cb.app_msg) {
+    if (g_app_cb.app_msg == NULL) {
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
@@ -176,7 +176,7 @@ static int CloudMainTaskEntry(void)
     while (1) {
         app_msg = NULL;
         (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL, 0xFFFFFFFF);
-        if (NULL != app_msg) {
+        if (app_msg != NULL) {
             switch (app_msg->msg_type) {
                 case en_msg_report:
                     deal_report_msg(&app_msg->msg.report);
@@ -217,8 +217,8 @@ static int SensorTaskEntry(void)
             Y = (int)data.Accel[ACCEL_Y_AXIS];
             Z = (int)data.Accel[ACCEL_Z_AXIS];
         } else {
-            if (X + FLIP_THRESHOLD < data.Accel[ACCEL_X_AXIS] || X - FLIP_THRESHOLD > data.Accel[ACCEL_X_AXIS] 
-                || Y + FLIP_THRESHOLD < data.Accel[ACCEL_Y_AXIS] || Y - FLIP_THRESHOLD > data.Accel[ACCEL_Y_AXIS] 
+            if (X + FLIP_THRESHOLD < data.Accel[ACCEL_X_AXIS] || X - FLIP_THRESHOLD > data.Accel[ACCEL_X_AXIS]
+                || Y + FLIP_THRESHOLD < data.Accel[ACCEL_Y_AXIS] || Y - FLIP_THRESHOLD > data.Accel[ACCEL_Y_AXIS]
                 || Z + FLIP_THRESHOLD < data.Accel[ACCEL_Z_AXIS] || Z - FLIP_THRESHOLD > data.Accel[ACCEL_Z_AXIS]) {
                 LedD1StatusSet(OFF);
                 LedD2StatusSet(ON);

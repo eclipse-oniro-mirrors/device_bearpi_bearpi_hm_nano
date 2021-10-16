@@ -63,7 +63,6 @@ typedef struct {
 
 typedef struct {
     int lum;
-
 } report_t;
 
 typedef struct {
