@@ -13,38 +13,40 @@
  * limitations under the License.
  */
 
-#include "cmsis_os2.h"
-#include "ohos_init.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 
-#include "E53_SC2.h"
-#include "wifi_connect.h"
+
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
+#include "E53_SC2.h"
+#include "wifi_connect.h"
 
-#define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
+#define CONFIG_WIFI_SSID "BearPi"   // 修改为自己的WiFi 热点账号
 
-#define CONFIG_WIFI_PWD "BearPi" //修改为自己的WiFi 热点密码
+#define CONFIG_WIFI_PWD "BearPi"    // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
 
 #define CONFIG_APP_SERVERPORT "1883"
 
-#define CONFIG_APP_DEVICEID "601ceda104feea02d7069720_2143565789" //替换为注册设备后生成的deviceid
+#define CONFIG_APP_DEVICEID "601ceda104feea02d7069720_2143565789"   // 替换为注册设备后生成的deviceid
 
-#define CONFIG_APP_DEVICEPWD "123456789" //替换为注册设备后生成的密钥
+#define CONFIG_APP_DEVICEPWD "123456789"    // 替换为注册设备后生成的密钥
 
-#define CONFIG_APP_LIFETIME 60 ///< seconds
+#define CONFIG_APP_LIFETIME 60  // < seconds
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_COUNT 16 
-#define MSGQUEUE_SIZE 10 
+#define MSGQUEUE_COUNT  16 
+#define MSGQUEUE_SIZE   10 
 #define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
 #define SENSOR_TASK_STACK_SIZE (1024 * 4)
@@ -86,7 +88,6 @@ typedef struct {
 typedef struct {
     osMessageQueueId_t app_msg;
     int connected;
-
 } app_cb_t;
 static app_cb_t g_app_cb;
 
@@ -174,7 +175,7 @@ static int CloudMainTaskEntry(void)
 
     while (1) {
         app_msg = NULL;
-        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL,0xFFFFFFFF);
+        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL, 0xFFFFFFFF);
         if (NULL != app_msg) {
             switch (app_msg->msg_type) {
                 case en_msg_report:
@@ -228,17 +229,15 @@ static int SensorTaskEntry(void)
                 g_coverStatus = 0;
             }
         }
-
         app_msg = malloc(sizeof(app_msg_t));
-
-        if (NULL != app_msg) {
+        if (app_msg != NULL) {
             app_msg->msg_type = en_msg_report;
             app_msg->msg.report.temp = (int)data.Temperature;
             app_msg->msg.report.acce_x = (int)data.Accel[ACCEL_X_AXIS];
             app_msg->msg.report.acce_y = (int)data.Accel[ACCEL_Y_AXIS];
             app_msg->msg.report.acce_z = (int)data.Accel[ACCEL_Z_AXIS];
 
-            if (0 != osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT)) {
+            if (osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT) != 0) {
                 free(app_msg);
             }
         }

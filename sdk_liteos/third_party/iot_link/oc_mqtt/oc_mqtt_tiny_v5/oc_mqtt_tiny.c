@@ -48,8 +48,8 @@
 #include <string.h>
 #include <link_misc.h>
 #include <time.h>
-#include "cmsis_os2.h"
 #include <oc_mqtt_al.h>
+#include "cmsis_os2.h"
 
 #include  <link_log.h>
 #include <cJSON.h>           //json mode

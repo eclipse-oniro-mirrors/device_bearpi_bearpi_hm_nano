@@ -13,38 +13,39 @@
  * limitations under the License.
  */
 
-#include "cmsis_os2.h"
-#include "ohos_init.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 
-#include "E53_IA1.h"
-#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
+#include "E53_IA1.h"
+#include "wifi_connect.h"
 
-#define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
-
-#define CONFIG_WIFI_PWD "BearPi" //修改为自己的WiFi 热点密码
+#define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
+ 
+#define CONFIG_WIFI_PWD "BearPi" // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
 
 #define CONFIG_APP_SERVERPORT "1883"
 
-#define CONFIG_APP_DEVICEID "600e557f9a002602d44ac47f_2132132131231" //替换为注册设备后生成的deviceid
+#define CONFIG_APP_DEVICEID "600e557f9a002602d44ac47f_2132132131231" // 替换为注册设备后生成的deviceid
 
-#define CONFIG_APP_DEVICEPWD "123456789" //替换为注册设备后生成的密钥
+#define CONFIG_APP_DEVICEPWD "123456789" // 替换为注册设备后生成的密钥
 
-#define CONFIG_APP_LIFETIME 60 ///< seconds
+#define CONFIG_APP_LIFETIME 60 // seconds
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_COUNT 16 
-#define MSGQUEUE_SIZE 10
+#define MSGQUEUE_COUNT  16 
+#define MSGQUEUE_SIZE   10
 #define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
 #define SENSOR_TASK_STACK_SIZE (1024 * 4)
@@ -141,13 +142,13 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     int buf_len;
     app_msg_t* app_msg;
 
-    if ((NULL == msg) || (msg->request_id == NULL) || (msg->type != EN_OC_MQTT_PROFILE_MSG_TYPE_DOWN_COMMANDS)) {
+    if ((msg == NULL) || (msg->request_id == NULL) || (msg->type != EN_OC_MQTT_PROFILE_MSG_TYPE_DOWN_COMMANDS)) {
         return ret;
     }
 
     buf_len = sizeof(app_msg_t) + strlen(msg->request_id) + 1 + msg->msg_len + 1;
     buf = malloc(buf_len);
-    if (NULL == buf) {
+    if (buf == NULL) {
         return ret;
     }
     app_msg = (app_msg_t*)buf;
@@ -165,7 +166,7 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     memcpy_s(app_msg->msg.cmd.payload, buf_len, msg->msg, buf_len);
     app_msg->msg.cmd.payload[buf_len] = '\0';
 
-    ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U,CONFIG_QUEUE_TIMEOUT);
+    ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT);
     if (ret != 0) {
         free(app_msg);
     }
@@ -185,25 +186,25 @@ static void deal_cmd_msg(cmd_t* cmd)
     int cmdret = 1;
     oc_mqtt_profile_cmdresp_t cmdresp;
     obj_root = cJSON_Parse(cmd->payload);
-    if (NULL == obj_root) {
+    if (obj_root == NULL) {
         goto EXIT_JSONPARSE;
     }
 
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
-    if (NULL == obj_cmdname) {
+    if (obj_cmdname == NULL) {
         goto EXIT_CMDOBJ;
     }
-    if (0 == strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_light")) {
+    if (strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_light") == 0) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
-        if (NULL == obj_paras) {
+        if (obj_paras== NULL) {
             goto EXIT_OBJPARAS;
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Light");
-        if (NULL == obj_para) {
+        if (obj_paras== NULL) {
             goto EXIT_OBJPARA;
         }
         ///< operate the LED here
-        if (0 == strcmp(cJSON_GetStringValue(obj_para), "ON")) {
+        if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
             g_app_cb.led = 1;
             LightStatusSet(ON);
             printf("Light On!\r\n");
@@ -213,17 +214,17 @@ static void deal_cmd_msg(cmd_t* cmd)
             printf("Light Off!\r\n");
         }
         cmdret = 0;
-    } else if (0 == strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_Motor")) {
+    } else if (strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_Motor") == 0) {
         obj_paras = cJSON_GetObjectItem(obj_root, "Paras");
-        if (NULL == obj_paras) {
+        if (obj_paras== NULL) {
             goto EXIT_OBJPARAS;
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Motor");
-        if (NULL == obj_para) {
+        if (obj_para == NULL) {
             goto EXIT_OBJPARA;
         }
         ///< operate the Motor here
-        if (0 == strcmp(cJSON_GetStringValue(obj_para), "ON")) {
+        if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
             g_app_cb.motor = 1;
             MotorStatusSet(ON);
             printf("Motor On!\r\n");
@@ -260,7 +261,7 @@ static int CloudMainTaskEntry(void)
     oc_mqtt_init();
 
     g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
-    if (NULL == g_app_cb.app_msg) {
+    if (g_app_cb.app_msg == NULL) {
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
@@ -284,8 +285,8 @@ static int CloudMainTaskEntry(void)
 
     while (1) {
         app_msg = NULL;
-        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL,0xFFFFFFFF);
-        if (NULL != app_msg) {
+        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL, 0xFFFFFFFF);
+        if (app_msg != NULL) {
             switch (app_msg->msg_type) {
                 case en_msg_cmd:
                     deal_cmd_msg(&app_msg->msg.cmd);
@@ -321,12 +322,12 @@ static int SensorTaskEntry(void)
         }
         app_msg = malloc(sizeof(app_msg_t));
         printf("SENSOR:lum:%.2f temp:%.2f hum:%.2f\r\n", data.Lux, data.Temperature, data.Humidity);
-        if (NULL != app_msg) {
+        if (app_msg != NULL) {
             app_msg->msg_type = en_msg_report;
             app_msg->msg.report.hum = (int)data.Humidity;
             app_msg->msg.report.lum = (int)data.Lux;
             app_msg->msg.report.temp = (int)data.Temperature;
-            if (0 != osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT)) {
+            if (osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT != 0)) {
                 free(app_msg);
             }
         }
@@ -337,7 +338,6 @@ static int SensorTaskEntry(void)
 
 static void IotMainTaskEntry(void)
 {
-
     osThreadAttr_t attr;
 
     attr.name = "CloudMainTaskEntry";
