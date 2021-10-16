@@ -44,8 +44,9 @@
 
 #define MSGQUEUE_COUNT 16 
 #define MSGQUEUE_SIZE 10 
-#define CLOUD_TASK_STACK_SIZE 1024*10
+#define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
+#define BEEP_DELAY  5
 
 typedef enum {
     en_msg_cmd = 0,
@@ -141,7 +142,7 @@ static int CloudMainTaskEntry(void)
         g_infraredStatus = 1;
         deal_report_msg();
 
-        osDelay(500);
+        sleep(BEEP_DELAY);
 
         BeepStatusSet(OFF);
         g_infraredStatus = 0;

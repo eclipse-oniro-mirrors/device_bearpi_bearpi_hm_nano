@@ -45,9 +45,9 @@
 
 #define MSGQUEUE_COUNT 16 
 #define MSGQUEUE_SIZE 10 
-#define CLOUD_TASK_STACK_SIZE 1024*10
+#define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
-#define SENSOR_TASK_STACK_SIZE 1024*4
+#define SENSOR_TASK_STACK_SIZE (1024 * 4)
 #define SENSOR_TASK_PRIO 25
 #define TASK_DELAY 3
 #define FLIP_THRESHOLD 100
@@ -234,9 +234,9 @@ static int SensorTaskEntry(void)
         if (NULL != app_msg) {
             app_msg->msg_type = en_msg_report;
             app_msg->msg.report.temp = (int)data.Temperature;
-            app_msg->msg.report.acce_x = (int)data.Accel[0];
-            app_msg->msg.report.acce_y = (int)data.Accel[1];
-            app_msg->msg.report.acce_z = (int)data.Accel[2];
+            app_msg->msg.report.acce_x = (int)data.Accel[ACCEL_X_AXIS];
+            app_msg->msg.report.acce_y = (int)data.Accel[ACCEL_Y_AXIS];
+            app_msg->msg.report.acce_z = (int)data.Accel[ACCEL_Z_AXIS];
 
             if (0 != osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT)) {
                 free(app_msg);

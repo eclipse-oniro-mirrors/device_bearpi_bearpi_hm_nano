@@ -45,9 +45,9 @@
 
 #define MSGQUEUE_COUNT 16 
 #define MSGQUEUE_SIZE 10 
-#define CLOUD_TASK_STACK_SIZE 1024*10
+#define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
-#define SENSOR_TASK_STACK_SIZE 1024*4
+#define SENSOR_TASK_STACK_SIZE (1024 * 4)
 #define SENSOR_TASK_PRIO 25
 #define TASK_DELAY 3
 #define CHECK_DELAY 1
@@ -143,7 +143,7 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     memcpy(app_msg->msg.cmd.payload, msg->msg, buf_len);
     app_msg->msg.cmd.payload[buf_len] = '\0';
 
-    ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U,10);
+    ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U,CONFIG_QUEUE_TIMEOUT);
     if (ret != 0) {
         free(app_msg);
     }
