@@ -186,67 +186,92 @@ static void oc_cmdresp(cmd_t* cmd, int cmdret)
 
 ///< COMMAND DEAL
 #include <cJSON.h>
+static void deal_light_cmd(cmd_t* cmd, cJSON* obj_root)
+{
+    cJSON* obj_paras;
+    cJSON* obj_para;
+    int cmdret;
+
+    obj_paras = cJSON_GetObjectItem(obj_root, "paras");
+    if (obj_paras == NULL) {
+        goto _ERR;
+    }
+    obj_para = cJSON_GetObjectItem(obj_paras, "Light");
+    if (obj_paras == NULL) {
+        goto _ERR;
+    }
+    ///< operate the LED here
+    if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
+        g_app_cb.led = 1;
+        LightStatusSet(ON);
+        printf("Light On!\r\n");
+    } else {
+        g_app_cb.led = 0;
+        LightStatusSet(OFF);
+        printf("Light Off!\r\n");
+    }
+    cmdret = 0;
+    oc_cmdresp(cmd, cmdret);
+
+_ERR:
+    cJSON_Delete(obj_root);
+    return;
+}
+
+static void deal_motor_cmd(cmd_t* cmd, cJSON* obj_root)
+{
+    cJSON* obj_paras;
+    cJSON* obj_para;
+    int cmdret;
+
+    obj_paras = cJSON_GetObjectItem(obj_root, "Paras");
+    if (obj_paras == NULL) {
+        goto _ERR;
+    }
+    obj_para = cJSON_GetObjectItem(obj_paras, "Motor");
+    if (obj_para == NULL) {
+        goto _ERR;
+    }
+    ///< operate the Motor here
+    if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
+        g_app_cb.motor = 1;
+        MotorStatusSet(ON);
+        printf("Motor On!\r\n");
+    } else {
+        g_app_cb.motor = 0;
+        MotorStatusSet(OFF);
+        printf("Motor Off!\r\n");
+    }
+    cmdret = 0;
+    oc_cmdresp(cmd, cmdret);
+
+_ERR:
+    cJSON_Delete(obj_root);
+    return;
+}
+
 static void deal_cmd_msg(cmd_t* cmd)
 {
     cJSON* obj_root;
     cJSON* obj_cmdname;
-    cJSON* obj_paras;
-    cJSON* obj_para;
+
 
     int cmdret = 1;
     obj_root = cJSON_Parse(cmd->payload);
     if (obj_root == NULL) {
-        oc_cmdresp(cmd,cmdret);
+        oc_cmdresp(cmd, cmdret);
     }
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
     if (obj_cmdname == NULL) {
-        goto EXIT_CMDOBJ;
+        goto _ERR;
     }
     if (strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_light") == 0) {
-        obj_paras = cJSON_GetObjectItem(obj_root, "paras");
-        if (obj_paras == NULL) {
-            goto EXIT_CMDOBJ;
-        }
-        obj_para = cJSON_GetObjectItem(obj_paras, "Light");
-        if (obj_paras == NULL) {
-            goto EXIT_CMDOBJ;
-        }
-        ///< operate the LED here
-        if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
-            g_app_cb.led = 1;
-            LightStatusSet(ON);
-            printf("Light On!\r\n");
-        } else {
-            g_app_cb.led = 0;
-            LightStatusSet(OFF);
-            printf("Light Off!\r\n");
-        }
-        cmdret = 0;
-        oc_cmdresp(cmd,cmdret);
+        deal_light_cmd(cmd, obj_root);
     } else if (strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_Motor") == 0) {
-        obj_paras = cJSON_GetObjectItem(obj_root, "Paras");
-        if (obj_paras == NULL) {
-            goto EXIT_CMDOBJ;
-        }
-        obj_para = cJSON_GetObjectItem(obj_paras, "Motor");
-        if (obj_para == NULL) {
-            goto EXIT_CMDOBJ;
-        }
-        ///< operate the Motor here
-        if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
-            g_app_cb.motor = 1;
-            MotorStatusSet(ON);
-            printf("Motor On!\r\n");
-        } else {
-            g_app_cb.motor = 0;
-            MotorStatusSet(OFF);
-            printf("Motor Off!\r\n");
-        }
-        cmdret = 0;
-        oc_cmdresp(cmd,cmdret);
+        deal_motor_cmd(cmd, obj_root);
     }
 
-EXIT_CMDOBJ:
+_ERR:
     cJSON_Delete(obj_root);
     return;
 }
@@ -347,7 +372,7 @@ static void IotMainTaskEntry(void)
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
     attr.stack_size = CLOUD_TASK_STACK_SIZE;
-    attr.priority = TASK_PRIO;
+    attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create CloudMainTaskEntry!\n");

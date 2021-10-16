@@ -12,19 +12,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cmsis_os2.h"
-#include "ohos_init.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 
-#include "E53_ST1.h"
-#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
+#include "E53_ST1.h"
+#include "wifi_connect.h"
 
 #define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
 
@@ -178,21 +178,21 @@ static void deal_cmd_msg(cmd_t* cmd)
 
     obj_root = cJSON_Parse(cmd->payload);
     if (obj_root == NULL) {
-        oc_cmdresp(cmd,cmdret);
+        oc_cmdresp(cmd, cmdret);
     }
 
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
     if (obj_cmdname == NULL) {
-        goto EXIT_CMDOBJ;
+        goto _ERR;
     }
     if (strcmp(cJSON_GetStringValue(obj_cmdname), "Track_Control_Beep" == 0)) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
         if (obj_paras == NULL) {
-            goto EXIT_CMDOBJ;
+            goto _ERR;
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Beep");
         if (obj_para == NULL) {
-            goto EXIT_CMDOBJ;
+            goto _ERR;
         }
         ///< operate the Beep here
         if (strcmp(cJSON_GetStringValue(obj_para), "ON" == 0)) {
@@ -205,10 +205,10 @@ static void deal_cmd_msg(cmd_t* cmd)
             printf("Beep Off!\r\n");
         }
         cmdret = 0;
-        oc_cmdresp(cmd,cmdret);
+        oc_cmdresp(cmd, cmdret);
     }
 
-EXIT_CMDOBJ:
+_ERR:
     cJSON_Delete(obj_root);
     return;
 }

@@ -172,21 +172,21 @@ static void deal_cmd_msg(cmd_t* cmd)
     int cmdret = 1;
     obj_root = cJSON_Parse(cmd->payload);
     if (obj_root == NULL) {
-        oc_cmdresp(cmd,cmdret);
+        oc_cmdresp(cmd, cmdret);
     }
 
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
     if (obj_cmdname == NULL) {
-        goto EXIT_CMDOBJ;
+        goto _ERR;
     }
     if (strcmp(cJSON_GetStringValue(obj_cmdname), "Smoke_Control_Beep") == 0) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
         if (obj_paras == NULL) {
-            goto EXIT_CMDOBJ;
+            goto _ERR;
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Beep");
         if (obj_para == NULL) {
-            goto EXIT_CMDOBJ;
+            goto _ERR;
         }
         ///< operate the LED here
         if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
@@ -199,10 +199,10 @@ static void deal_cmd_msg(cmd_t* cmd)
             printf("Beep Off!\r\n");
         }
         cmdret = 0;
-        oc_cmdresp(cmd,cmdret);
+        oc_cmdresp(cmd, cmdret);
     }
 
-EXIT_CMDOBJ:
+_ERR:
     cJSON_Delete(obj_root);
     return;
 }

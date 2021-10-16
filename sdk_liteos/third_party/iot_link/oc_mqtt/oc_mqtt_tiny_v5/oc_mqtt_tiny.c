@@ -42,7 +42,7 @@
  *  3, the pwd only support the no check time mode
  *
  */
-#include "cmsis_os2.h"
+
 #include <link_misc.h>
 #include <oc_mqtt_al.h>
 #include <stddef.h>
@@ -50,10 +50,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include "cmsis_os2.h"
 
-#include "hmac.h"  //used to generate the user pwd
 #include <cJSON.h> //json mode
 #include <link_log.h>
+#include "hmac.h"  //used to generate the user pwd
 
 ////CRT FOR THE OC
 static const char s_oc_mqtt_ca_crt[] =
@@ -268,7 +269,7 @@ static char* topic_fmt(const char* fmt, const char* id)
 
     ret = malloc(len);
     if (ret != NULL) {
-        (void)snprintf_s(ret, sizeof(ret), len, fmt, id);
+        (void)snprintf_s(ret, len, len, fmt, id);
     }
 
     return ret;
@@ -292,7 +293,7 @@ static char* clientid_fmt(const char* id, const char* salt_time, const char* sco
     len = strlen(fmt) + strlen(id) + strlen(param) + 1;
     ret = malloc(len);
     if (ret != NULL) {
-        (void)snprintf_s(ret, sizeof(ret), len, fmt, id, param);
+        (void)snprintf_s(ret, len, len, fmt, id, param);
     }
     return ret;
 }
@@ -907,53 +908,53 @@ static int deal_api_subscribe(oc_mqtt_tiny_cb_t* cb, oc_mqtt_daemon_cmd_t* cmd)
     return ret;
 }
 
-static int deal_unsubscribe(oc_mqtt_tiny_cb_t* cb, oc_mqtt_daemon_cmd_t* cmd)
+static int deal_unsubscribe(oc_mqtt_tiny_cb_t* cb, mqtt_al_unsubpara_t* unsubpara)
 {
     int ret = (int)en_oc_mqtt_err_noconfigured;
     tiny_topic_sub_t* topic_sub = NULL;
-    tiny_topic_sub_t* topic_sub_nxt = NUL;
+    tiny_topic_sub_t* topic_sub_nxt = NULL;
 
-    mqtt_al_unsubpara_t* unsubpara;
-
-    unsubpara = cmd->arg;
-
-    if (mqtt_al_unsubscribe(cb->mqtt_para.mqtt_handle, unsubpara) == 0) {
-        ///< remove the topic from the subscribe list;
-        topic_sub = cb->subscribe_lst;
-        if (topic_sub != NULL) {
-            if (strcmp(unsubpara->topic.data, topic_sub->topic == 0)) {
-                cb->subscribe_lst = topic_sub->nxt;
-                free(topic_sub);
-            } else {
-                topic_sub_nxt = topic_sub->nxt;
-                while (topic_sub_nxt != NULL) {
-                    if (strcmp(unsubpara->topic.data, topic_sub_nxt->topic == 0)) {
-                        topic_sub->nxt = topic_sub_nxt->nxt;
-                        free(topic_sub_nxt);
-                        break;
-                    } else {
-                        topic_sub = topic_sub_nxt;
-                        topic_sub_nxt = topic_sub_nxt->nxt;
-                    }
+    topic_sub = cb->subscribe_lst;
+    if (topic_sub != NULL) {
+        if (strcmp(unsubpara->topic.data, topic_sub->topic == 0)) {
+            cb->subscribe_lst = topic_sub->nxt;
+            free(topic_sub);
+        } else {
+            topic_sub_nxt = topic_sub->nxt;
+            while (topic_sub_nxt != NULL) {
+                if (strcmp(unsubpara->topic.data, topic_sub_nxt->topic == 0)) {
+                    topic_sub->nxt = topic_sub_nxt->nxt;
+                    free(topic_sub_nxt);
+                    break;
+                } else {
+                    topic_sub = topic_sub_nxt;
+                    topic_sub_nxt = topic_sub_nxt->nxt;
                 }
             }
         }
-        ret = (int)en_oc_mqtt_err_ok;
-    } else {
-        ret = (int)en_oc_mqtt_err_unsubscribe;
     }
+    ret = (int)en_oc_mqtt_err_ok;
     return ret;
 }
 
 ///< unsubscribe the specified topic
 static int deal_api_unsubscribe(oc_mqtt_tiny_cb_t* cb, oc_mqtt_daemon_cmd_t* cmd)
 {
+    mqtt_al_unsubpara_t* unsubpara;
+
+    unsubpara = cmd->arg;
+    
     int ret = (int)en_oc_mqtt_err_noconfigured;
     if ((int)en_daemon_status_idle == cb->flag.bits.bit_daemon_status) {
         ret = (int)en_oc_mqtt_err_noconfigured;
     } else if ((cb->flag.bits.bit_daemon_status == (int)en_daemon_status_hub_keep) &&
                (mqtt_al_check_status(cb->mqtt_para.mqtt_handle) == en_mqtt_al_connect_ok)) {
-        ret = deal_unsubscribe(cb, cmd);
+            if (mqtt_al_unsubscribe(cb->mqtt_para.mqtt_handle, unsubpara) == 0) {
+        ///< remove the topic from the subscribe list;
+            deal_unsubscribe(cb,unsubpara);
+    } else {
+        ret = (int)en_oc_mqtt_err_unsubscribe;
+    }
     } else {
         ret = (int)en_oc_mqtt_err_noconected;
     }
