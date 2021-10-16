@@ -15,7 +15,7 @@ static_library("cloud_oc_infrared") {
   sources = [
     "iot_cloud_oc_sample.c",
     "src/E53_IS1.c",
-    "src/wifi_connect.c",       
+    "src/wifi_connect.c",
   ]
 
   cflags = [ "-Wno-unused-variable" ]
