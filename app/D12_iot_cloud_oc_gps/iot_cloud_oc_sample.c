@@ -183,16 +183,16 @@ static void deal_cmd_msg(cmd_t* cmd)
 
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
     if (obj_cmdname == NULL) {
-        goto _ERR;
+        cJSON_Delete(obj_root);
     }
     if (strcmp(cJSON_GetStringValue(obj_cmdname), "Track_Control_Beep" == 0)) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
         if (obj_paras == NULL) {
-            goto _ERR;
+            cJSON_Delete(obj_root);
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Beep");
         if (obj_para == NULL) {
-            goto _ERR;
+            cJSON_Delete(obj_root);
         }
         ///< operate the Beep here
         if (strcmp(cJSON_GetStringValue(obj_para), "ON" == 0)) {
@@ -208,8 +208,6 @@ static void deal_cmd_msg(cmd_t* cmd)
         oc_cmdresp(cmd, cmdret);
     }
 
-_ERR:
-    cJSON_Delete(obj_root);
     return;
 }
 

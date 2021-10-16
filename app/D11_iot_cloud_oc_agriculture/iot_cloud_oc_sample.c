@@ -194,11 +194,11 @@ static void deal_light_cmd(cmd_t* cmd, cJSON* obj_root)
 
     obj_paras = cJSON_GetObjectItem(obj_root, "paras");
     if (obj_paras == NULL) {
-        goto _ERR;
+        cJSON_Delete(obj_root);
     }
     obj_para = cJSON_GetObjectItem(obj_paras, "Light");
     if (obj_paras == NULL) {
-        goto _ERR;
+        cJSON_Delete(obj_root);
     }
     ///< operate the LED here
     if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
@@ -226,11 +226,11 @@ static void deal_motor_cmd(cmd_t* cmd, cJSON* obj_root)
 
     obj_paras = cJSON_GetObjectItem(obj_root, "Paras");
     if (obj_paras == NULL) {
-        goto _ERR;
+        cJSON_Delete(obj_root);
     }
     obj_para = cJSON_GetObjectItem(obj_paras, "Motor");
     if (obj_para == NULL) {
-        goto _ERR;
+        cJSON_Delete(obj_root);
     }
     ///< operate the Motor here
     if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
@@ -255,7 +255,6 @@ static void deal_cmd_msg(cmd_t* cmd)
     cJSON* obj_root;
     cJSON* obj_cmdname;
 
-
     int cmdret = 1;
     obj_root = cJSON_Parse(cmd->payload);
     if (obj_root == NULL) {
@@ -263,7 +262,7 @@ static void deal_cmd_msg(cmd_t* cmd)
     }
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
     if (obj_cmdname == NULL) {
-        goto _ERR;
+        cJSON_Delete(obj_root);
     }
     if (strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_light") == 0) {
         deal_light_cmd(cmd, obj_root);
@@ -271,8 +270,6 @@ static void deal_cmd_msg(cmd_t* cmd)
         deal_motor_cmd(cmd, obj_root);
     }
 
-_ERR:
-    cJSON_Delete(obj_root);
     return;
 }
 

@@ -52,9 +52,9 @@
 #include <time.h>
 #include "cmsis_os2.h"
 
-#include <cJSON.h> //json mode
+#include <cJSON.h> // json mode
 #include <link_log.h>
-#include "hmac.h"  //used to generate the user pwd
+#include "hmac.h"  // used to generate the user pwd
 
 ////CRT FOR THE OC
 static const char s_oc_mqtt_ca_crt[] =
@@ -111,7 +111,7 @@ const char* s_new_topic_fmt[] = {
     "$oc/devices/%s/sys/properties/get/#", "$oc/devices/%s/sys/shadow/get/response/#",
     "$oc/devices/%s/sys/events/down",
 };
-#define CN_NEW_TOPIC_NUM (sizeof(s_new_topic_fmt) / sizeof(const char*))
+#define CN_NEW_TOPIC_NUM 5
 
 typedef struct {
     char* hubserver_addr; ///< we get from the bs server
@@ -915,21 +915,22 @@ static int deal_unsubscribe(oc_mqtt_tiny_cb_t* cb, mqtt_al_unsubpara_t* unsubpar
     tiny_topic_sub_t* topic_sub_nxt = NULL;
 
     topic_sub = cb->subscribe_lst;
-    if (topic_sub != NULL) {
-        if (strcmp(unsubpara->topic.data, topic_sub->topic == 0)) {
-            cb->subscribe_lst = topic_sub->nxt;
-            free(topic_sub);
-        } else {
-            topic_sub_nxt = topic_sub->nxt;
-            while (topic_sub_nxt != NULL) {
-                if (strcmp(unsubpara->topic.data, topic_sub_nxt->topic == 0)) {
-                    topic_sub->nxt = topic_sub_nxt->nxt;
-                    free(topic_sub_nxt);
-                    break;
-                } else {
-                    topic_sub = topic_sub_nxt;
-                    topic_sub_nxt = topic_sub_nxt->nxt;
-                }
+    if (topic_sub == NULL) {
+        return ret;
+    }
+    if (strcmp(unsubpara->topic.data, topic_sub->topic == 0)) {
+        cb->subscribe_lst = topic_sub->nxt;
+        free(topic_sub);
+    } else {
+        topic_sub_nxt = topic_sub->nxt;
+        while (topic_sub_nxt != NULL) {
+            if (strcmp(unsubpara->topic.data, topic_sub_nxt->topic == 0)) {
+                topic_sub->nxt = topic_sub_nxt->nxt;
+                free(topic_sub_nxt);
+                break;
+            } else {
+                topic_sub = topic_sub_nxt;
+                topic_sub_nxt = topic_sub_nxt->nxt;
             }
         }
     }
@@ -951,7 +952,7 @@ static int deal_api_unsubscribe(oc_mqtt_tiny_cb_t* cb, oc_mqtt_daemon_cmd_t* cmd
                (mqtt_al_check_status(cb->mqtt_para.mqtt_handle) == en_mqtt_al_connect_ok)) {
             if (mqtt_al_unsubscribe(cb->mqtt_para.mqtt_handle, unsubpara) == 0) {
         ///< remove the topic from the subscribe list;
-            deal_unsubscribe(cb,unsubpara);
+            ret = deal_unsubscribe(cb, unsubpara);
     } else {
         ret = (int)en_oc_mqtt_err_unsubscribe;
     }
