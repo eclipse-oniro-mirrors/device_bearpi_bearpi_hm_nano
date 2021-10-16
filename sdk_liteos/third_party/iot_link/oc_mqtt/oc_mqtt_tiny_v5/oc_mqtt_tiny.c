@@ -101,6 +101,11 @@ static const char s_oc_mqtt_ca_crt[] =
 #define CN_OC_MQTT_LIFELEAST           (30)
 #define CN_OC_MQTT_LIFEMAX             (1200)
 
+#define MSGQUEUE_GET_TIMEOUT             (10*1000)
+#define MSGQUEUE_PUT_TIMEOUT             10
+#define MSGQUEUE_COUNT 16 
+#define MSGQUEUE_SIZE 10 
+
 const char *s_new_topic_fmt[]=
 {
     "$oc/devices/%s/sys/messages/down",
@@ -329,7 +334,7 @@ static int daemon_cmd_post(en_oc_mqtt_daemon_cmd cmd, void *arg)
         daemon_cmd->signal = osSemaphoreNew(1, 0, NULL);
         if (daemon_cmd->signal != NULL)
         {
-            if(osMessageQueuePut(s_oc_mqtt_tiny_cb->task_daemon_cmd_queue,&daemon_cmd,NULL,10 == 0))
+            if(osMessageQueuePut(s_oc_mqtt_tiny_cb->task_daemon_cmd_queue,&daemon_cmd,NULL,MSGQUEUE_PUT_TIMEOUT == 0))
             {
                 (void)osSemaphoreAcquire(daemon_cmd->signal,osWaitForever);
                 ret = daemon_cmd->retcode;
@@ -1121,7 +1126,7 @@ static int daemon_entry(void *arg)
     cb = arg;
     while((NULL != cb) && (0 == cb->daemon_exit))
     {
-        if(osMessageQueueGet(cb->task_daemon_cmd_queue, (void **)&daemon_cmd, NULL, 10*1000 == 0))
+        if(osMessageQueueGet(cb->task_daemon_cmd_queue, (void **)&daemon_cmd, NULL, MSGQUEUE_GET_TIMEOUT == 0))
         {
             switch (daemon_cmd->cmd)             ///< execute the command here
             {
@@ -1411,7 +1416,7 @@ int oc_mqtt_imp_init(void)
     }
     (void) memset(cb,0,sizeof(oc_mqtt_tiny_cb_t));
 
-    cb->task_daemon_cmd_queue = osMessageQueueNew(16,10,NULL);
+    cb->task_daemon_cmd_queue = osMessageQueueNew(MSGQUEUE_COUNT,MSGQUEUE_SIZE,NULL);
     if(NULL == cb->task_daemon_cmd_queue)
     {
         goto EXIT_QUEUE;
