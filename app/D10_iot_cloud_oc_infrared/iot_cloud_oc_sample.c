@@ -12,19 +12,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cmsis_os2.h"
-#include "ohos_init.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 
-#include "E53_IS1.h"
-#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
+#include "E53_IS1.h"
+#include "wifi_connect.h"
 
 #define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
 

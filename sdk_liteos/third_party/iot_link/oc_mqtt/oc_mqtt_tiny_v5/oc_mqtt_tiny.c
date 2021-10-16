@@ -51,9 +51,9 @@
 #include <string.h>
 #include <time.h>
 
-#include "hmac.h"  //used to generate the user pwd
 #include <cJSON.h> //json mode
 #include <link_log.h>
+#include "hmac.h"  //used to generate the user pwd
 
 ////CRT FOR THE OC
 static const char s_oc_mqtt_ca_crt[] =
@@ -335,7 +335,7 @@ static int config_parameter_release(oc_mqtt_tiny_cb_t* cb)
     }
 
     unsigned int i = 0;
-    for (i = 0; i < CN_NEW_TOPIC_NUM; i++) {
+    for (i = 0; i < (int)CN_NEW_TOPIC_NUM; i++) {
         if (cb->hub_sub_topic[i] != NULL) {
             free(cb->hub_sub_topic[i]);
         }
@@ -471,7 +471,7 @@ static int config_parameter_clone(oc_mqtt_tiny_cb_t* cb, oc_mqtt_config_t* confi
     }
 
     unsigned int i = 0;
-    for (i = 0; i < CN_NEW_TOPIC_NUM; i++) {
+    for (i = 0; i < (int)CN_NEW_TOPIC_NUM; i++) {
         cb->hub_sub_topic[i] = topic_fmt(s_new_topic_fmt[i], (const char*)cb->config.id);
         if (cb->hub_sub_topic[i] == NULL) {
             (void)config_parameter_release(cb);
@@ -512,9 +512,9 @@ static int oc_mqtt_para_gernerate(oc_mqtt_tiny_cb_t* cb)
     if (date == NULL) {
         return ret;
     }
-
-    (void)snprintf(cb->salt_time, 11, "%04d%02d%02d%02d", date->tm_year + 1900, date->tm_mon, date->tm_mday,
-                   date->tm_hour);
+    uint8_t tmp = 11;
+    (void)snprintf_s(cb->salt_time, sizeof(cb->salt_time), tmp, "%04d%02d%02d%02d", date->tm_year + 1900, date->tm_mon,
+                     date->tm_mday, date->tm_hour);
 
     (void)oc_mqtt_para_release(cb); ///< try to free all the resource we have built
 
@@ -689,7 +689,7 @@ static int dmp_subscribe(oc_mqtt_tiny_cb_t* cb)
             ret = mqtt_al_subscribe(cb->mqtt_para.mqtt_handle, &subpara);
 
             LINK_LOG_DEBUG("oc_mqtt_subscribe:retcode:%d:%s", ret, oc_mqtt_err(ret));
-            if (0 != ret) {
+            if (ret != 0) {
                 ret = (int)en_oc_mqtt_err_subscribe;
                 break;
             }
@@ -1085,9 +1085,8 @@ static int tiny_config(oc_mqtt_config_t* config)
                 cert_mode = 1;
             }
         }
-
-        if ((config->pwd == NULL) && (cert_mode == 0)) ///< we permit the no pwd but you should config the client ca
-        {
+        ///< we permit the no pwd but you should config the client ca
+        if ((config->pwd == NULL) && (cert_mode == 0)) {
             return ret;
         }
         ret = daemon_cmd_post(en_oc_mqtt_daemon_cmd_connect, config);
