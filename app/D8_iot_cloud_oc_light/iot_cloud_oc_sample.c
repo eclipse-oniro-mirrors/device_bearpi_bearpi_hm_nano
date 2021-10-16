@@ -12,39 +12,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "cmsis_os2.h"
-#include "ohos_init.h"
 
-
+#include "E53_SC1.h"
+#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include "E53_SC1.h"
-#include "wifi_connect.h"
 
-#define CONFIG_WIFI_SSID "BearPi"   // 修改为自己的WiFi 热点账号
+#define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
 
-#define CONFIG_WIFI_PWD "BearPi"    // 修改为自己的WiFi 热点密码
+#define CONFIG_WIFI_PWD "BearPi" // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
 
 #define CONFIG_APP_SERVERPORT "1883"
 
-#define CONFIG_APP_DEVICEID "6012d1394b835702d79aa5a7_12334556443"  // 替换为注册设备后生成的deviceid
+#define CONFIG_APP_DEVICEID "6012d1394b835702d79aa5a7_12334556443" // 替换为注册设备后生成的deviceid
 
-#define CONFIG_APP_DEVICEPWD "123456789"    // 替换为注册设备后生成的密钥
+#define CONFIG_APP_DEVICEPWD "123456789" // 替换为注册设备后生成的密钥
 
 #define CONFIG_APP_LIFETIME 60 // seconds
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_COUNT  16 
-#define MSGQUEUE_SIZE   10 
+#define MSGQUEUE_COUNT 16
+#define MSGQUEUE_SIZE 10
 #define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
 #define SENSOR_TASK_STACK_SIZE (1024 * 4)
@@ -141,7 +140,7 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     memcpy_s(app_msg->msg.cmd.payload, buf_len, msg->msg, buf_len);
     app_msg->msg.cmd.payload[buf_len] = '\0';
 
-    ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U,CONFIG_QUEUE_TIMEOUT);
+    ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT);
     if (ret != 0) {
         free(app_msg);
     }

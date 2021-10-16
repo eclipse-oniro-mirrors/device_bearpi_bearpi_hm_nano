@@ -13,23 +13,22 @@
  * limitations under the License.
  */
 
-
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "cmsis_os2.h"
-#include "ohos_init.h"
 
+#include "E53_IA1.h"
+#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include "E53_IA1.h"
-#include "wifi_connect.h"
 
 #define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
- 
+
 #define CONFIG_WIFI_PWD "BearPi" // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
@@ -44,8 +43,8 @@
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_COUNT  16 
-#define MSGQUEUE_SIZE   10
+#define MSGQUEUE_COUNT 16
+#define MSGQUEUE_SIZE 10
 #define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
 #define SENSOR_TASK_STACK_SIZE (1024 * 4)
@@ -196,11 +195,11 @@ static void deal_cmd_msg(cmd_t* cmd)
     }
     if (strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_light") == 0) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
-        if (obj_paras== NULL) {
+        if (obj_paras == NULL) {
             goto EXIT_OBJPARAS;
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Light");
-        if (obj_paras== NULL) {
+        if (obj_paras == NULL) {
             goto EXIT_OBJPARA;
         }
         ///< operate the LED here
@@ -216,7 +215,7 @@ static void deal_cmd_msg(cmd_t* cmd)
         cmdret = 0;
     } else if (strcmp(cJSON_GetStringValue(obj_cmdname), "Agriculture_Control_Motor") == 0) {
         obj_paras = cJSON_GetObjectItem(obj_root, "Paras");
-        if (obj_paras== NULL) {
+        if (obj_paras == NULL) {
             goto EXIT_OBJPARAS;
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Motor");

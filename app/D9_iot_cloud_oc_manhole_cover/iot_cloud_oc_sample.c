@@ -13,40 +13,38 @@
  * limitations under the License.
  */
 
-
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "cmsis_os2.h"
-#include "ohos_init.h"
 
-
+#include "E53_SC2.h"
+#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include "E53_SC2.h"
-#include "wifi_connect.h"
 
-#define CONFIG_WIFI_SSID "BearPi"   // 修改为自己的WiFi 热点账号
+#define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
 
-#define CONFIG_WIFI_PWD "BearPi"    // 修改为自己的WiFi 热点密码
+#define CONFIG_WIFI_PWD "BearPi" // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
 
 #define CONFIG_APP_SERVERPORT "1883"
 
-#define CONFIG_APP_DEVICEID "601ceda104feea02d7069720_2143565789"   // 替换为注册设备后生成的deviceid
+#define CONFIG_APP_DEVICEID "601ceda104feea02d7069720_2143565789" // 替换为注册设备后生成的deviceid
 
-#define CONFIG_APP_DEVICEPWD "123456789"    // 替换为注册设备后生成的密钥
+#define CONFIG_APP_DEVICEPWD "123456789" // 替换为注册设备后生成的密钥
 
-#define CONFIG_APP_LIFETIME 60  // < seconds
+#define CONFIG_APP_LIFETIME 60 // < seconds
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_COUNT  16 
-#define MSGQUEUE_SIZE   10 
+#define MSGQUEUE_COUNT 16
+#define MSGQUEUE_SIZE 10
 #define CLOUD_TASK_STACK_SIZE (1024 * 10)
 #define CLOUD_TASK_PRIO 24
 #define SENSOR_TASK_STACK_SIZE (1024 * 4)
@@ -55,9 +53,9 @@
 #define FLIP_THRESHOLD 100
 
 enum AccelAxisNum {
-    ACCEL_X_AXIS   = 0,
-    ACCEL_Y_AXIS   = 1,
-    ACCEL_Z_AXIS   = 2,
+    ACCEL_X_AXIS = 0,
+    ACCEL_Y_AXIS = 1,
+    ACCEL_Z_AXIS = 2,
     ACCEL_AXIS_NUM = 3,
 };
 
@@ -217,9 +215,9 @@ static int SensorTaskEntry(void)
             Y = (int)data.Accel[ACCEL_Y_AXIS];
             Z = (int)data.Accel[ACCEL_Z_AXIS];
         } else {
-            if (X + FLIP_THRESHOLD < data.Accel[ACCEL_X_AXIS] || X - FLIP_THRESHOLD > data.Accel[ACCEL_X_AXIS]
-                || Y + FLIP_THRESHOLD < data.Accel[ACCEL_Y_AXIS] || Y - FLIP_THRESHOLD > data.Accel[ACCEL_Y_AXIS]
-                || Z + FLIP_THRESHOLD < data.Accel[ACCEL_Z_AXIS] || Z - FLIP_THRESHOLD > data.Accel[ACCEL_Z_AXIS]) {
+            if (X + FLIP_THRESHOLD < data.Accel[ACCEL_X_AXIS] || X - FLIP_THRESHOLD > data.Accel[ACCEL_X_AXIS] ||
+                Y + FLIP_THRESHOLD < data.Accel[ACCEL_Y_AXIS] || Y - FLIP_THRESHOLD > data.Accel[ACCEL_Y_AXIS] ||
+                Z + FLIP_THRESHOLD < data.Accel[ACCEL_Z_AXIS] || Z - FLIP_THRESHOLD > data.Accel[ACCEL_Z_AXIS]) {
                 LedD1StatusSet(OFF);
                 LedD2StatusSet(ON);
                 g_coverStatus = 1;
