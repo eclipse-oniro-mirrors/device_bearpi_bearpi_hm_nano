@@ -11,10 +11,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-static_library("cloud_oc_gps") {
+static_library("cloud_oc_infrared") {
   sources = [
     "iot_cloud_oc_sample.c",
-    "src/E53_ST1.c",
+    "src/E53_IS1.c",
     "src/wifi_connect.c",
   ]
 

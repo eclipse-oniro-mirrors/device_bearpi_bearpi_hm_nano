@@ -26,11 +26,13 @@ static_library("cloud_oc_smoke") {
     "//device/bearpi/bearpi_hm_nano/iot_hardware_hals/include",
     "//foundation/communication/wifi_lite/interfaces/wifiservice",
     "//third_party/cJSON",
-    "../../sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_al",
-    "../../sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_profile_v5",
-    "../../sdk_liteos/third_party/iot_link/inc",
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_al",
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_profile_v5",
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link/inc",
     "include",
   ]
 
-  deps = [ "../../sdk_liteos/third_party/iot_link:iot_link" ]
+  deps = [
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link:iot_link",
+  ]
 }
