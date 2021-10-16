@@ -15,7 +15,7 @@ static_library("cloud_oc_infrared") {
   sources = [
     "iot_cloud_oc_sample.c",
     "src/E53_IS1.c",
-    "src/wifi_connect.c"
+    "src/wifi_connect.c",       
   ]
 
   cflags = [ "-Wno-unused-variable" ]
@@ -29,7 +29,7 @@ static_library("cloud_oc_infrared") {
     "../../sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_al",
     "../../sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_profile_v5",
     "../../sdk_liteos/third_party/iot_link/inc",
-    "include"
+    "include",
   ]
 
   deps = [ "../../sdk_liteos/third_party/iot_link:iot_link" ]

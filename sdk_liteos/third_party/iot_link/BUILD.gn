@@ -12,12 +12,12 @@
 # limitations under the License.
 
 group("iot_link") {
-    deps = [
-        "inc:inc",
-        "link_log:link_log",
-        "link_misc:link_misc",
-        "network/dtls:dtls",
-        "network/mqtt:mqtt",
-        "oc_mqtt:oc_mqtt"
-    ]
+  deps = [
+    "inc:inc",
+    "link_log:link_log",
+    "link_misc:link_misc",
+    "network/dtls:dtls",
+    "network/mqtt:mqtt",
+    "oc_mqtt:oc_mqtt",
+  ]
 }
