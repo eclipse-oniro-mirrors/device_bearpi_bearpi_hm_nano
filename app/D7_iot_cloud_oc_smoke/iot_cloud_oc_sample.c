@@ -135,12 +135,12 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     app_msg->msg.cmd.request_id = buf;
     buf_len = strlen(msg->request_id);
     buf += buf_len + 1;
-    memcpy(app_msg->msg.cmd.request_id, msg->request_id, buf_len);
+    memcpy_s(app_msg->msg.cmd.request_id, buf_len, msg->request_id, buf_len);
     app_msg->msg.cmd.request_id[buf_len] = '\0';
 
     buf_len = msg->msg_len;
     app_msg->msg.cmd.payload = buf;
-    memcpy(app_msg->msg.cmd.payload, msg->msg, buf_len);
+    memcpy_s(app_msg->msg.cmd.payload, buf_len, msg->msg, buf_len);
     app_msg->msg.cmd.payload[buf_len] = '\0';
 
     ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U,CONFIG_QUEUE_TIMEOUT);
@@ -222,7 +222,7 @@ static int CloudMainTaskEntry(void)
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
-    (void)memset(&connect_para, 0, sizeof(connect_para));
+    (void)memset_s(&connect_para, sizeof(connect_para), 0, sizeof(connect_para));
 
     connect_para.boostrap = 0;
     connect_para.device_id = CONFIG_APP_DEVICEID;
@@ -278,7 +278,7 @@ static int SensorTaskEntry(void)
         printf("Smoke ppm:%.3f\r\n", ppm);
         if (NULL != app_msg) {
             app_msg->msg_type = en_msg_report;
-            sprintf(app_msg->msg.report.smokevalue, "%.3f", ppm);
+            sprintf_s(app_msg->msg.report.smokevalue, sizeof(app_msg->msg.report.smokevalue), "%.3f", ppm);
             if (0 != osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT)) {
                 free(app_msg);
             }

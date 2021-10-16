@@ -19,12 +19,12 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "E53_IS1.h"
-#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
+#include "E53_IS1.h"
+#include "wifi_connect.h"
 
 #define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
 
@@ -111,7 +111,7 @@ static int CloudMainTaskEntry(void)
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
-    (void)memset(&connect_para, 0, sizeof(connect_para));
+    (void)memset_s(&connect_para, sizeof(connect_para), 0, sizeof(connect_para));
 
     connect_para.boostrap = 0;
     connect_para.device_id = CONFIG_APP_DEVICEID;
