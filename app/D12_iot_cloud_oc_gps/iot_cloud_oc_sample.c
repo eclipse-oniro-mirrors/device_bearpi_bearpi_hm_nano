@@ -123,7 +123,7 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     int buf_len;
     app_msg_t* app_msg;
 
-    if ((NULL == msg) || (msg->request_id == NULL) || (msg->type != EN_OC_MQTT_PROFILE_MSG_TYPE_DOWN_COMMANDS)) {
+    if ((msg == NULL) || (msg->request_id == NULL) || (msg->type != EN_OC_MQTT_PROFILE_MSG_TYPE_DOWN_COMMANDS)) {
         return ret;
     }
 
@@ -155,6 +155,16 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     return ret;
 }
 
+static void oc_cmdresp(cmd_t* cmd, int cmdret)
+{
+    oc_mqtt_profile_cmdresp_t cmdresp;
+    ///< do the response
+    cmdresp.paras = NULL;
+    cmdresp.request_id = cmd->request_id;
+    cmdresp.ret_code = cmdret;
+    cmdresp.ret_name = NULL;
+    (void)oc_mqtt_profile_cmdresp(NULL, &cmdresp);
+}
 ///< COMMAND DEAL
 #include <cJSON.h>
 static void deal_cmd_msg(cmd_t* cmd)
@@ -165,10 +175,10 @@ static void deal_cmd_msg(cmd_t* cmd)
     cJSON* obj_para;
 
     int cmdret = 1;
-    oc_mqtt_profile_cmdresp_t cmdresp;
+
     obj_root = cJSON_Parse(cmd->payload);
     if (obj_root == NULL) {
-        goto EXIT_JSONPARSE;
+        oc_cmdresp(cmd,cmdret);
     }
 
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
@@ -178,11 +188,11 @@ static void deal_cmd_msg(cmd_t* cmd)
     if (strcmp(cJSON_GetStringValue(obj_cmdname), "Track_Control_Beep" == 0)) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
         if (obj_paras == NULL) {
-            goto EXIT_OBJPARAS;
+            goto EXIT_CMDOBJ;
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Beep");
         if (obj_para == NULL) {
-            goto EXIT_OBJPARA;
+            goto EXIT_CMDOBJ;
         }
         ///< operate the Beep here
         if (strcmp(cJSON_GetStringValue(obj_para), "ON" == 0)) {
@@ -195,19 +205,11 @@ static void deal_cmd_msg(cmd_t* cmd)
             printf("Beep Off!\r\n");
         }
         cmdret = 0;
+        oc_cmdresp(cmd,cmdret);
     }
 
-EXIT_OBJPARA:
-EXIT_OBJPARAS:
 EXIT_CMDOBJ:
     cJSON_Delete(obj_root);
-EXIT_JSONPARSE:
-    ///< do the response
-    cmdresp.paras = NULL;
-    cmdresp.request_id = cmd->request_id;
-    cmdresp.ret_code = cmdret;
-    cmdresp.ret_name = NULL;
-    (void)oc_mqtt_profile_cmdresp(NULL, &cmdresp);
     return;
 }
 
