@@ -13,38 +13,51 @@
  * limitations under the License.
  */
 
-#include "cmsis_os2.h"
-#include "ohos_init.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 
-#include "E53_SC2.h"
-#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include <queue.h>
+#include "E53_SC2.h"
+#include "wifi_connect.h"
 
-#define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
+#define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
 
-#define CONFIG_WIFI_PWD "BearPi" //修改为自己的WiFi 热点密码
+#define CONFIG_WIFI_PWD "BearPi" // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
 
 #define CONFIG_APP_SERVERPORT "1883"
 
-#define CONFIG_APP_DEVICEID "601ceda104feea02d7069720_2143565789" //替换为注册设备后生成的deviceid
+#define CONFIG_APP_DEVICEID "601ceda104feea02d7069720_2143565789" // 替换为注册设备后生成的deviceid
 
-#define CONFIG_APP_DEVICEPWD "123456789" //替换为注册设备后生成的密钥
+#define CONFIG_APP_DEVICEPWD "123456789" // 替换为注册设备后生成的密钥
 
-#define CONFIG_APP_LIFETIME 60 ///< seconds
+#define CONFIG_APP_LIFETIME 60 // < seconds
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_OBJECTS 16 // number of Message Queue Objects
+#define MSGQUEUE_COUNT 16
+#define MSGQUEUE_SIZE 10
+#define CLOUD_TASK_STACK_SIZE (1024 * 10)
+#define CLOUD_TASK_PRIO 24
+#define SENSOR_TASK_STACK_SIZE (1024 * 4)
+#define SENSOR_TASK_PRIO 25
+#define TASK_DELAY 3
+#define FLIP_THRESHOLD 100
+
+enum AccelAxisNum {
+    ACCEL_X_AXIS = 0,
+    ACCEL_Y_AXIS = 1,
+    ACCEL_Z_AXIS = 2,
+    ACCEL_AXIS_NUM = 3,
+};
 
 typedef enum {
     en_msg_cmd = 0,
@@ -71,9 +84,8 @@ typedef struct {
 } app_msg_t;
 
 typedef struct {
-    queue_t* app_msg;
+    osMessageQueueId_t app_msg;
     int connected;
-
 } app_cb_t;
 static app_cb_t g_app_cb;
 
@@ -136,12 +148,12 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = queue_create("queue_rcvmsg", 10, 1);
-    if (NULL == g_app_cb.app_msg) {
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
+    if (g_app_cb.app_msg == NULL) {
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
-    (void)memset(&connect_para, 0, sizeof(connect_para));
+    (void)memset_s(&connect_para, sizeof(connect_para), 0, sizeof(connect_para));
 
     connect_para.boostrap = 0;
     connect_para.device_id = CONFIG_APP_DEVICEID;
@@ -161,8 +173,8 @@ static int CloudMainTaskEntry(void)
 
     while (1) {
         app_msg = NULL;
-        (void)queue_pop(g_app_cb.app_msg, (void**)&app_msg, 0xFFFFFFFF);
-        if (NULL != app_msg) {
+        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL, 0xFFFFFFFF);
+        if (app_msg != NULL) {
             switch (app_msg->msg_type) {
                 case en_msg_report:
                     deal_report_msg(&app_msg->msg.report);
@@ -195,16 +207,17 @@ static int SensorTaskEntry(void)
             return;
         }
         printf("\r\n******************************Temperature      is  %d\r\n", (int)data.Temperature);
-        printf("\r\n******************************Accel[0]         is  %d\r\n", (int)data.Accel[0]);
-        printf("\r\n******************************Accel[1]         is  %d\r\n", (int)data.Accel[1]);
-        printf("\r\n******************************Accel[2]         is  %d\r\n", (int)data.Accel[2]);
+        printf("\r\n******************************Accel[ACCEL_X_AXIS] is  %d\r\n", (int)data.Accel[ACCEL_X_AXIS]);
+        printf("\r\n******************************Accel[ACCEL_Y_AXIS] is  %d\r\n", (int)data.Accel[ACCEL_Y_AXIS]);
+        printf("\r\n******************************Accel[ACCEL_Z_AXIS] is  %d\r\n", (int)data.Accel[ACCEL_Z_AXIS]);
         if (X == 0 && Y == 0 && Z == 0) {
-            X = (int)data.Accel[0];
-            Y = (int)data.Accel[1];
-            Z = (int)data.Accel[2];
+            X = (int)data.Accel[ACCEL_X_AXIS];
+            Y = (int)data.Accel[ACCEL_Y_AXIS];
+            Z = (int)data.Accel[ACCEL_Z_AXIS];
         } else {
-            if (X + 100 < data.Accel[0] || X - 100 > data.Accel[0] || Y + 100 < data.Accel[1] ||
-                Y - 100 > data.Accel[1] || Z + 100 < data.Accel[2] || Z - 100 > data.Accel[2]) {
+            if (X + FLIP_THRESHOLD < data.Accel[ACCEL_X_AXIS] || X - FLIP_THRESHOLD > data.Accel[ACCEL_X_AXIS] ||
+                Y + FLIP_THRESHOLD < data.Accel[ACCEL_Y_AXIS] || Y - FLIP_THRESHOLD > data.Accel[ACCEL_Y_AXIS] ||
+                Z + FLIP_THRESHOLD < data.Accel[ACCEL_Z_AXIS] || Z - FLIP_THRESHOLD > data.Accel[ACCEL_Z_AXIS]) {
                 LedD1StatusSet(OFF);
                 LedD2StatusSet(ON);
                 g_coverStatus = 1;
@@ -214,21 +227,19 @@ static int SensorTaskEntry(void)
                 g_coverStatus = 0;
             }
         }
-
         app_msg = malloc(sizeof(app_msg_t));
-
-        if (NULL != app_msg) {
+        if (app_msg != NULL) {
             app_msg->msg_type = en_msg_report;
             app_msg->msg.report.temp = (int)data.Temperature;
-            app_msg->msg.report.acce_x = (int)data.Accel[0];
-            app_msg->msg.report.acce_y = (int)data.Accel[1];
-            app_msg->msg.report.acce_z = (int)data.Accel[2];
+            app_msg->msg.report.acce_x = (int)data.Accel[ACCEL_X_AXIS];
+            app_msg->msg.report.acce_y = (int)data.Accel[ACCEL_Y_AXIS];
+            app_msg->msg.report.acce_z = (int)data.Accel[ACCEL_Z_AXIS];
 
-            if (0 != queue_push(g_app_cb.app_msg, app_msg, CONFIG_QUEUE_TIMEOUT)) {
+            if (osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT) != 0) {
                 free(app_msg);
             }
         }
-        sleep(3);
+        sleep(TASK_DELAY);
     }
     return 0;
 }
@@ -242,14 +253,14 @@ static void IotMainTaskEntry(void)
     attr.cb_mem = NULL;
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
-    attr.stack_size = 10240;
-    attr.priority = 24;
+    attr.stack_size = CLOUD_TASK_STACK_SIZE;
+    attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create CloudMainTaskEntry!\n");
     }
-    attr.stack_size = 4096;
-    attr.priority = 25;
+    attr.stack_size = SENSOR_TASK_STACK_SIZE;
+    attr.priority = SENSOR_TASK_PRIO;
     attr.name = "SensorTaskEntry";
     if (osThreadNew((osThreadFunc_t)SensorTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create SensorTaskEntry!\n");

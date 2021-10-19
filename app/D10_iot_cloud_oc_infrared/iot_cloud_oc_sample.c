@@ -12,38 +12,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "cmsis_os2.h"
-#include "ohos_init.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 
-#include "E53_IS1.h"
-#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include <queue.h>
+#include "E53_IS1.h"
+#include "wifi_connect.h"
 
-#define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
+#define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
 
-#define CONFIG_WIFI_PWD "BearPi" //修改为自己的WiFi 热点密码
+#define CONFIG_WIFI_PWD "BearPi" // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
 
 #define CONFIG_APP_SERVERPORT "1883"
 
-#define CONFIG_APP_DEVICEID "60154da604feea02d7f9ae8d_2354566786" //替换为注册设备后生成的deviceid
+#define CONFIG_APP_DEVICEID "60154da604feea02d7f9ae8d_2354566786" // 替换为注册设备后生成的deviceid
 
-#define CONFIG_APP_DEVICEPWD "123456789" //替换为注册设备后生成的密钥
+#define CONFIG_APP_DEVICEPWD "123456789" // 替换为注册设备后生成的密钥
 
-#define CONFIG_APP_LIFETIME 60 ///< seconds
+#define CONFIG_APP_LIFETIME 60 // seconds
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_OBJECTS 16 // number of Message Queue Objects
+#define MSGQUEUE_COUNT 16
+#define MSGQUEUE_SIZE 10
+#define CLOUD_TASK_STACK_SIZE (1024 * 10)
+#define CLOUD_TASK_PRIO 24
+#define BEEP_DELAY 5
 
 typedef enum {
     en_msg_cmd = 0,
@@ -56,7 +60,7 @@ typedef struct {
 } cmd_t;
 
 typedef struct {
-    queue_t* app_msg;
+    osMessageQueueId_t app_msg;
     int connected;
 } app_cb_t;
 static app_cb_t g_app_cb;
@@ -103,12 +107,12 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = queue_create("queue_rcvmsg", 10, 1);
-    if (NULL == g_app_cb.app_msg) {
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
+    if (g_app_cb.app_msg == NULL) {
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
-    (void)memset(&connect_para, 0, sizeof(connect_para));
+    (void)memset_s(&connect_para, sizeof(connect_para), 0, sizeof(connect_para));
 
     connect_para.boostrap = 0;
     connect_para.device_id = CONFIG_APP_DEVICEID;
@@ -139,7 +143,7 @@ static int CloudMainTaskEntry(void)
         g_infraredStatus = 1;
         deal_report_msg();
 
-        osDelay(500);
+        sleep(BEEP_DELAY);
 
         BeepStatusSet(OFF);
         g_infraredStatus = 0;
@@ -161,8 +165,8 @@ static void IotMainTaskEntry(void)
     attr.cb_mem = NULL;
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
-    attr.stack_size = 10240;
-    attr.priority = 24;
+    attr.stack_size = CLOUD_TASK_STACK_SIZES;
+    attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create CloudMainTaskEntry!\n");

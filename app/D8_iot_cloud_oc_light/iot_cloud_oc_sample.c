@@ -12,39 +12,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include "cmsis_os2.h"
-#include "ohos_init.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include "cmsis_os2.h"
+#include "ohos_init.h"
 
-#include "E53_SC1.h"
-#include "wifi_connect.h"
 #include <dtls_al.h>
 #include <mqtt_al.h>
 #include <oc_mqtt_al.h>
 #include <oc_mqtt_profile.h>
-#include <queue.h>
+#include "E53_SC1.h"
+#include "wifi_connect.h"
 
-#define CONFIG_WIFI_SSID "BearPi" //修改为自己的WiFi 热点账号
+#define CONFIG_WIFI_SSID "BearPi" // 修改为自己的WiFi 热点账号
 
-#define CONFIG_WIFI_PWD "BearPi" //修改为自己的WiFi 热点密码
+#define CONFIG_WIFI_PWD "BearPi" // 修改为自己的WiFi 热点密码
 
 #define CONFIG_APP_SERVERIP "121.36.42.100"
 
 #define CONFIG_APP_SERVERPORT "1883"
 
-#define CONFIG_APP_DEVICEID "6012d1394b835702d79aa5a7_12334556443" //替换为注册设备后生成的deviceid
+#define CONFIG_APP_DEVICEID "6012d1394b835702d79aa5a7_12334556443" // 替换为注册设备后生成的deviceid
 
-#define CONFIG_APP_DEVICEPWD "123456789" //替换为注册设备后生成的密钥
+#define CONFIG_APP_DEVICEPWD "123456789" // 替换为注册设备后生成的密钥
 
-#define CONFIG_APP_LIFETIME 60 ///< seconds
+#define CONFIG_APP_LIFETIME 60 // seconds
 
 #define CONFIG_QUEUE_TIMEOUT (5 * 1000)
 
-#define MSGQUEUE_OBJECTS 16 // number of Message Queue Objects
+#define MSGQUEUE_COUNT 16
+#define MSGQUEUE_SIZE 10
+#define CLOUD_TASK_STACK_SIZE (1024 * 10)
+#define CLOUD_TASK_PRIO 24
+#define SENSOR_TASK_STACK_SIZE (1024 * 4)
+#define SENSOR_TASK_PRIO 25
+#define TASK_DELAY 3
 
 typedef enum {
     en_msg_cmd = 0,
@@ -58,7 +62,6 @@ typedef struct {
 
 typedef struct {
     int lum;
-
 } report_t;
 
 typedef struct {
@@ -70,7 +73,7 @@ typedef struct {
 } app_msg_t;
 
 typedef struct {
-    queue_t* app_msg;
+    osMessageQueueId_t app_msg;
     int connected;
     int led;
 } app_cb_t;
@@ -113,13 +116,13 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     int buf_len;
     app_msg_t* app_msg;
 
-    if ((NULL == msg) || (msg->request_id == NULL) || (msg->type != EN_OC_MQTT_PROFILE_MSG_TYPE_DOWN_COMMANDS)) {
+    if ((msg == NULL) || (msg->request_id == NULL) || (msg->type != EN_OC_MQTT_PROFILE_MSG_TYPE_DOWN_COMMANDS)) {
         return ret;
     }
 
     buf_len = sizeof(app_msg_t) + strlen(msg->request_id) + 1 + msg->msg_len + 1;
     buf = malloc(buf_len);
-    if (NULL == buf) {
+    if (buf == NULL) {
         return ret;
     }
     app_msg = (app_msg_t*)buf;
@@ -129,22 +132,31 @@ static int msg_rcv_callback(oc_mqtt_profile_msgrcv_t* msg)
     app_msg->msg.cmd.request_id = buf;
     buf_len = strlen(msg->request_id);
     buf += buf_len + 1;
-    memcpy(app_msg->msg.cmd.request_id, msg->request_id, buf_len);
+    memcpy_s(app_msg->msg.cmd.request_id, buf_len, msg->request_id, buf_len);
     app_msg->msg.cmd.request_id[buf_len] = '\0';
 
     buf_len = msg->msg_len;
     app_msg->msg.cmd.payload = buf;
-    memcpy(app_msg->msg.cmd.payload, msg->msg, buf_len);
+    memcpy_s(app_msg->msg.cmd.payload, buf_len, msg->msg, buf_len);
     app_msg->msg.cmd.payload[buf_len] = '\0';
 
-    ret = queue_push(g_app_cb.app_msg, app_msg, 10);
+    ret = osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT);
     if (ret != 0) {
         free(app_msg);
     }
 
     return ret;
 }
-
+static void oc_cmdresp(cmd_t* cmd, int cmdret)
+{
+    oc_mqtt_profile_cmdresp_t cmdresp;
+    ///< do the response
+    cmdresp.paras = NULL;
+    cmdresp.request_id = cmd->request_id;
+    cmdresp.ret_code = cmdret;
+    cmdresp.ret_name = NULL;
+    (void)oc_mqtt_profile_cmdresp(NULL, &cmdresp);
+}
 ///< COMMAND DEAL
 #include <cJSON.h>
 static void deal_cmd_msg(cmd_t* cmd)
@@ -155,27 +167,27 @@ static void deal_cmd_msg(cmd_t* cmd)
     cJSON* obj_para;
 
     int cmdret = 1;
-    oc_mqtt_profile_cmdresp_t cmdresp;
+
     obj_root = cJSON_Parse(cmd->payload);
-    if (NULL == obj_root) {
-        goto EXIT_JSONPARSE;
+    if (obj_root == NULL) {
+        oc_cmdresp(cmd, cmdret);
     }
 
     obj_cmdname = cJSON_GetObjectItem(obj_root, "command_name");
-    if (NULL == obj_cmdname) {
-        goto EXIT_CMDOBJ;
+    if (obj_cmdname == NULL) {
+        cJSON_Delete(obj_root);
     }
-    if (0 == strcmp(cJSON_GetStringValue(obj_cmdname), "Light_Control_Led")) {
+    if (strcmp(cJSON_GetStringValue(obj_cmdname), "Light_Control_Led" == 0)) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
-        if (NULL == obj_paras) {
-            goto EXIT_OBJPARAS;
+        if (obj_paras == NULL) {
+            cJSON_Delete(obj_root);
         }
         obj_para = cJSON_GetObjectItem(obj_paras, "Led");
-        if (NULL == obj_para) {
-            goto EXIT_OBJPARA;
+        if (obj_para == NULL) {
+            cJSON_Delete(obj_root);
         }
         ///< operate the LED here
-        if (0 == strcmp(cJSON_GetStringValue(obj_para), "ON")) {
+        if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
             g_app_cb.led = 1;
             LightStatusSet(ON);
             printf("Led On!\r\n");
@@ -185,19 +197,9 @@ static void deal_cmd_msg(cmd_t* cmd)
             printf("Led Off!\r\n");
         }
         cmdret = 0;
+        oc_cmdresp(cmd, cmdret);
     }
 
-EXIT_OBJPARA:
-EXIT_OBJPARAS:
-EXIT_CMDOBJ:
-    cJSON_Delete(obj_root);
-EXIT_JSONPARSE:
-    ///< do the response
-    cmdresp.paras = NULL;
-    cmdresp.request_id = cmd->request_id;
-    cmdresp.ret_code = cmdret;
-    cmdresp.ret_name = NULL;
-    (void)oc_mqtt_profile_cmdresp(NULL, &cmdresp);
     return;
 }
 
@@ -211,12 +213,12 @@ static int CloudMainTaskEntry(void)
     mqtt_al_init();
     oc_mqtt_init();
 
-    g_app_cb.app_msg = queue_create("queue_rcvmsg", 10, 1);
-    if (NULL == g_app_cb.app_msg) {
+    g_app_cb.app_msg = osMessageQueueNew(MSGQUEUE_COUNT, MSGQUEUE_SIZE, NULL);
+    if (g_app_cb.app_msg == NULL) {
         printf("Create receive msg queue failed");
     }
     oc_mqtt_profile_connect_t connect_para;
-    (void)memset(&connect_para, 0, sizeof(connect_para));
+    (void)memset_s(&connect_para, sizeof(connect_para), 0, sizeof(connect_para));
 
     connect_para.boostrap = 0;
     connect_para.device_id = CONFIG_APP_DEVICEID;
@@ -236,8 +238,8 @@ static int CloudMainTaskEntry(void)
 
     while (1) {
         app_msg = NULL;
-        (void)queue_pop(g_app_cb.app_msg, (void**)&app_msg, 0xFFFFFFFF);
-        if (NULL != app_msg) {
+        (void)osMessageQueueGet(g_app_cb.app_msg, (void**)&app_msg, NULL, 0xFFFFFFFF);
+        if (app_msg != NULL) {
             switch (app_msg->msg_type) {
                 case en_msg_cmd:
                     deal_cmd_msg(&app_msg->msg.cmd);
@@ -274,14 +276,14 @@ static int SensorTaskEntry(void)
         app_msg = malloc(sizeof(app_msg_t));
 
         printf("Lux data:%.2f\r\n", Lux);
-        if (NULL != app_msg) {
+        if (app_msg != NULL) {
             app_msg->msg_type = en_msg_report;
             app_msg->msg.report.lum = (int)Lux;
-            if (0 != queue_push(g_app_cb.app_msg, app_msg, CONFIG_QUEUE_TIMEOUT)) {
+            if (osMessageQueuePut(g_app_cb.app_msg, &app_msg, 0U, CONFIG_QUEUE_TIMEOUT) != 0) {
                 free(app_msg);
             }
         }
-        sleep(3);
+        sleep(TASK_DELAY);
     }
     return 0;
 }
@@ -295,14 +297,14 @@ static void IotMainTaskEntry(void)
     attr.cb_mem = NULL;
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
-    attr.stack_size = 10240;
-    attr.priority = 24;
+    attr.stack_size = CLOUD_TASK_STACK_SIZE;
+    attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create CloudMainTaskEntry!\n");
     }
-    attr.stack_size = 4096;
-    attr.priority = 25;
+    attr.stack_size = SENSOR_TASK_STACK_SIZE;
+    attr.priority = SENSOR_TASK_PRIO;
     attr.name = "SensorTaskEntry";
     if (osThreadNew((osThreadFunc_t)SensorTaskEntry, NULL, &attr) == NULL) {
         printf("Failed to create SensorTaskEntry!\n");

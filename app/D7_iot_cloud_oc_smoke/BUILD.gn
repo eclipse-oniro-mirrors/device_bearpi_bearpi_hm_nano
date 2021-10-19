@@ -12,30 +12,24 @@
 # limitations under the License.
 
 static_library("cloud_oc_smoke") {
-    sources = [
-        "iot_cloud_oc_sample.c",
-        "src/wifi_connect.c",
-        "src/E53_SF1.c"
-        
-    ]
-    
-    cflags = [ "-Wno-unused-variable" ]
-    cflags += [ "-Wno-unused-but-set-variable" ]
-    
-    include_dirs = [
-        "//base/iot_hardware/peripheral/interfaces/kits",
-        "//device/bearpi/bearpi_hm_nano/iot_hardware_hals/include",
-        "//foundation/communication/wifi_lite/interfaces/wifiservice",
-        "//third_party/cJSON",
-        "../../sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_al",
-        "../../sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_profile_v5",
-        "../../sdk_liteos/third_party/iot_link/inc",
-        "../../sdk_liteos/third_party/iot_link/queue",
-        "include"
-    ]
+  sources = [
+    "iot_cloud_oc_sample.c",
+    "src/E53_SF1.c",
+    "src/wifi_connect.c",
+  ]
 
-    deps = [ 
-             "../../sdk_liteos/third_party/iot_link:iot_link",
-    ]
+  include_dirs = [
+    "//base/iot_hardware/peripheral/interfaces/kits",
+    "//device/bearpi/bearpi_hm_nano/iot_hardware_hals/include",
+    "//foundation/communication/wifi_lite/interfaces/wifiservice",
+    "//third_party/cJSON",
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_al",
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link/oc_mqtt/oc_mqtt_profile_v5",
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link/inc",
+    "include",
+  ]
 
+  deps = [
+    "//device/bearpi/bearpi_hm_nano/sdk_liteos/third_party/iot_link:iot_link",
+  ]
 }
