@@ -41,11 +41,11 @@ static void E53SC2IoInit(void)
 {
     IoTGpioInit(8);
     IoTGpioSetFunc(8, WIFI_IOT_IO_FUNC_GPIO_8_GPIO);
-    IoTGpioSetDir(8, IOT_GPIO_DIR_OUT); //设置GPIO_8为输出模式
+    IoTGpioSetDir(8, IOT_GPIO_DIR_OUT); // 设置GPIO_8为输出模式
 
     IoTGpioInit(7);
     IoTGpioSetFunc(7, WIFI_IOT_IO_FUNC_GPIO_7_GPIO);
-    IoTGpioSetDir(7, IOT_GPIO_DIR_OUT); //设置GPIO_7为输出模式
+    IoTGpioSetDir(7, IOT_GPIO_DIR_OUT); // 设置GPIO_7为输出模式
 
     IoTGpioInit(0);
     IoTGpioSetFunc(0, WIFI_IOT_IO_FUNC_GPIO_0_I2C1_SDA); // GPIO_0复用为I2C1_SDA
@@ -198,7 +198,7 @@ static int MPU6050ReadTemp(short* tempData)
 {
     int ret;
     uint8_t buf[2];
-    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, 2); //读取温度值
+    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, 2); // 读取温度值
     if (ret != 0) {
         return -1;
     }
@@ -218,7 +218,7 @@ static int MPU6050ReturnTemp(short* Temperature)
     short temp3;
     uint8_t buf[2];
 
-    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, 2); //读取温度值
+    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, 2); // 读取温度值
     if (ret != 0) {
         return -1;
     }
@@ -233,20 +233,20 @@ static int MPU6050ReturnTemp(short* Temperature)
  * 返 回 值: 无
  * 说    明: 无
  **************************************************************/
-void FreeFallInterrupt(void) //自由落体中断
+void FreeFallInterrupt(void) // 自由落体中断
 {
-    MPU6050WriteReg(MPU6050_RA_FF_THR, 0x01); //自由落体阈值
-    MPU6050WriteReg(MPU6050_RA_FF_DUR, 0x01); //自由落体检测时间20ms 单位1ms 寄存器0X20
+    MPU6050WriteReg(MPU6050_RA_FF_THR, 0x01); // 自由落体阈值
+    MPU6050WriteReg(MPU6050_RA_FF_DUR, 0x01); // 自由落体检测时间20ms 单位1ms 寄存器0X20
 }
-void MotionInterrupt(void) //运动中断
+void MotionInterrupt(void) // 运动中断
 {
-    MPU6050WriteReg(MPU6050_RA_MOT_THR, 0x03); //运动阈值
-    MPU6050WriteReg(MPU6050_RA_MOT_DUR, 0x14); //检测时间20ms 单位1ms 寄存器0X20
+    MPU6050WriteReg(MPU6050_RA_MOT_THR, 0x03); // 运动阈值
+    MPU6050WriteReg(MPU6050_RA_MOT_DUR, 0x14); // 检测时间20ms 单位1ms 寄存器0X20
 }
-void ZeroMotionInterrupt(void) //静止中断
+void ZeroMotionInterrupt(void) // 静止中断
 {
-    MPU6050WriteReg(MPU6050_RA_ZRMOT_THR, 0x20); //静止阈值
-    MPU6050WriteReg(MPU6050_RA_ZRMOT_DUR, 0x20); //静止检测时间20ms 单位1ms 寄存器0X20
+    MPU6050WriteReg(MPU6050_RA_ZRMOT_THR, 0x20); // 静止阈值
+    MPU6050WriteReg(MPU6050_RA_ZRMOT_DUR, 0x20); // 静止检测时间20ms 单位1ms 寄存器0X20
 }
 
 /***************************************************************
@@ -258,25 +258,21 @@ void ZeroMotionInterrupt(void) //静止中断
 void MPU6050Init(void)
 {
     int i = 0, j = 0;
-    //在初始化之前要延时一段时间，若没有延时，则断电后再上电数据可能会出错
-    for (i = 0; i < 1000; i++) {
-        for (j = 0; j < 1000; j++) {
-            ;
-        }
-    }
-    MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X80); //复位MPU6050
+    // 在初始化之前要延时一段时间，若没有延时，则断电后再上电数据可能会出错
     usleep(20000);
-    MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X00); //唤醒MPU6050
-    MPU6050WriteReg(MPU6050_RA_INT_ENABLE, 0X00); //关闭所有中断
+    MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X80); // 复位MPU6050
+    usleep(20000);
+    MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X00); // 唤醒MPU6050
+    MPU6050WriteReg(MPU6050_RA_INT_ENABLE, 0X00); // 关闭所有中断
     MPU6050WriteReg(MPU6050_RA_USER_CTRL, 0X00);  // I2C主模式关闭
-    MPU6050WriteReg(MPU6050_RA_FIFO_EN, 0X00);    //关闭FIFO
+    MPU6050WriteReg(MPU6050_RA_FIFO_EN, 0X00);    // 关闭FIFO
     MPU6050WriteReg(MPU6050_RA_INT_PIN_CFG,
-                    0X80); //中断的逻辑电平模式,设置为0，中断信号为高电；设置为1，中断信号为低电平时。
-    MotionInterrupt();                              //运动中断
-    MPU6050WriteReg(MPU6050_RA_CONFIG, 0x04);       //配置外部引脚采样和DLPF数字低通滤波器
-    MPU6050WriteReg(MPU6050_RA_ACCEL_CONFIG, 0x1C); //加速度传感器量程和高通滤波器配置
+                    0X80); // 中断的逻辑电平模式,设置为0，中断信号为高电；设置为1，中断信号为低电平时。
+    MotionInterrupt();                              // 运动中断
+    MPU6050WriteReg(MPU6050_RA_CONFIG, 0x04);       // 配置外部引脚采样和DLPF数字低通滤波器
+    MPU6050WriteReg(MPU6050_RA_ACCEL_CONFIG, 0x1C); // 加速度传感器量程和高通滤波器配置
     MPU6050WriteReg(MPU6050_RA_INT_PIN_CFG, 0X1C);  // INT引脚低电平平时
-    MPU6050WriteReg(MPU6050_RA_INT_ENABLE, 0x40);   //中断使能寄存器
+    MPU6050WriteReg(MPU6050_RA_INT_ENABLE, 0x40);   // 中断使能寄存器
 }
 
 /***************************************************************
@@ -288,7 +284,7 @@ void MPU6050Init(void)
 int MPU6050ReadID(void)
 {
     unsigned char Re = 0;
-    MPU6050ReadData(MPU6050_RA_WHO_AM_I, &Re, 1); //读器件地址
+    MPU6050ReadData(MPU6050_RA_WHO_AM_I, &Re, 1); // 读器件地址
     if (Re != 0x68) {
         printf("MPU6050 dectected error!\r\n");
         return -1;
@@ -338,9 +334,9 @@ int E53SC2ReadData(E53SC2Data* ReadData)
         return -1;
     }
     ReadData->Temperature = Temp;
-    ReadData->Accel[0] = Accel[0];
-    ReadData->Accel[1] = Accel[1];
-    ReadData->Accel[2] = Accel[2];
+    ReadData->Accel[ACCEL_X_AXIS] = Accel[ACCEL_X_AXIS];
+    ReadData->Accel[ACCEL_Y_AXIS] = Accel[ACCEL_Y_AXIS];
+    ReadData->Accel[ACCEL_Z_AXIS] = Accel[ACCEL_Z_AXIS];
     usleep(50000);
     return 0;
 }
@@ -355,10 +351,10 @@ int E53SC2ReadData(E53SC2Data* ReadData)
 void LedD1StatusSet(E53SC2Status status)
 {
     if (status == ON) {
-        IoTGpioSetOutputVal(7, 1); //设置GPIO_7输出高电平点亮灯
+        IoTGpioSetOutputVal(7, 1); // 设置GPIO_7输出高电平点亮灯
     }
     if (status == OFF) {
-        IoTGpioSetOutputVal(7, 0); //设置GPIO_7输出低电平关闭灯
+        IoTGpioSetOutputVal(7, 0); // 设置GPIO_7输出低电平关闭灯
     }
 }
 
@@ -373,10 +369,10 @@ void LedD1StatusSet(E53SC2Status status)
 void LedD2StatusSet(E53SC2Status status)
 {
     if (status == ON) {
-        IoTGpioSetOutputVal(8, 1); //设置GPIO_8输出高电平点亮灯
+        IoTGpioSetOutputVal(8, 1); // 设置GPIO_8输出高电平点亮灯
     }
 
     if (status == OFF) {
-        IoTGpioSetOutputVal(8, 0); //设置GPIO_8输出低电平关闭灯
+        IoTGpioSetOutputVal(8, 0); // 设置GPIO_8输出低电平关闭灯
     }
 }

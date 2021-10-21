@@ -52,13 +52,6 @@
 #define TASK_DELAY 3
 #define FLIP_THRESHOLD 100
 
-enum AccelAxisNum {
-    ACCEL_X_AXIS = 0,
-    ACCEL_Y_AXIS = 1,
-    ACCEL_Z_AXIS = 2,
-    ACCEL_AXIS_NUM = 3,
-};
-
 typedef enum {
     en_msg_cmd = 0,
     en_msg_report,

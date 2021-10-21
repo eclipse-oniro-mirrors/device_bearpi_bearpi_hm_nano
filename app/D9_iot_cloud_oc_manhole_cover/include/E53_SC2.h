@@ -44,12 +44,20 @@ typedef enum
 	ON
 } E53SC2Status;
 
+enum AccelAxisNum {
+    ACCEL_X_AXIS = 0,
+    ACCEL_Y_AXIS = 1,
+    ACCEL_Z_AXIS = 2,
+    ACCEL_AXIS_NUM = 3,
+};
+
 /* E53_SC2传感器数据类型定义 ------------------------------------------------------------*/
 typedef struct
 {
     short   Temperature;     
     short   Accel[3];
 } E53SC2Data;
+
 
 
 int E53SC2Init(void);

@@ -185,7 +185,7 @@ static void deal_cmd_msg(cmd_t* cmd)
     if (obj_cmdname == NULL) {
         cJSON_Delete(obj_root);
     }
-    if (strcmp(cJSON_GetStringValue(obj_cmdname), "Track_Control_Beep" == 0)) {
+    if (strcmp(cJSON_GetStringValue(obj_cmdname), "Track_Control_Beep") == 0) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
         if (obj_paras == NULL) {
             cJSON_Delete(obj_root);
@@ -195,7 +195,7 @@ static void deal_cmd_msg(cmd_t* cmd)
             cJSON_Delete(obj_root);
         }
         ///< operate the Beep here
-        if (strcmp(cJSON_GetStringValue(obj_para), "ON" == 0)) {
+        if (strcmp(cJSON_GetStringValue(obj_para), "ON") == 0) {
             g_app_cb.beep = 1;
             BeepStatusSet(ON);
             printf("Beep On!\r\n");
