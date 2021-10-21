@@ -224,6 +224,7 @@ static int MPU6050ReturnTemp(short* Temperature)
     }
     temp3 = (buf[0] << 8) | buf[1];
     *Temperature = (((double)(temp3 + 13200)) / 280) - 13;
+    return 0;
 }
 
 /***************************************************************
