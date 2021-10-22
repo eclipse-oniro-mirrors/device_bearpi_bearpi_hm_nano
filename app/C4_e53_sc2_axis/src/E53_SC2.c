@@ -257,9 +257,6 @@ void ZeroMotionInterrupt(void) // 静止中断
  ***************************************************************/
 void MPU6050Init(void)
 {
-    int i = 0, j = 0;
-    // 在初始化之前要延时一段时间，若没有延时，则断电后再上电数据可能会出错
-    usleep(20000);
     MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X80); // 复位MPU6050
     usleep(20000);
     MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X00); // 唤醒MPU6050

@@ -58,8 +58,6 @@ typedef struct
     short   Accel[3];
 } E53SC2Data;
 
-
-
 int E53SC2Init(void);
 int E53SC2ReadData(E53SC2Data *ReadData);
 void LedD1StatusSet(E53SC2Status status);
