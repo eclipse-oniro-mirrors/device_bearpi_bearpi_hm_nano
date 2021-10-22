@@ -162,8 +162,8 @@ static int MPU6050ReadData(uint8_t reg_add, unsigned char* read, uint8_t num)
 static int MPU6050ReadAcc(short* accData)
 {
     int ret;
-    uint8_t buf[6];
-    ret = MPU6050ReadData(MPU6050_ACC_OUT, buf, 6);
+    uint8_t buf[ACCEL_DATA_LEN];
+    ret = MPU6050ReadData(MPU6050_ACC_OUT, buf, ACCEL_DATA_LEN);
     if (ret != 0) {
         return -1;
     }
@@ -182,8 +182,8 @@ static int MPU6050ReadAcc(short* accData)
 static int MPU6050ReadGyro(short* gyroData)
 {
     int ret;
-    uint8_t buf[6];
-    ret = MPU6050ReadData(MPU6050_GYRO_OUT, buf, 6);
+    uint8_t buf[ACCEL_DATA_LEN];
+    ret = MPU6050ReadData(MPU6050_GYRO_OUT, buf, ACCEL_DATA_LEN);
     if (ret != 0) {
         return -1;
     }
@@ -202,8 +202,8 @@ static int MPU6050ReadGyro(short* gyroData)
 static int MPU6050ReadTemp(short* tempData)
 {
     int ret;
-    uint8_t buf[2];
-    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, 2); // 读取温度值
+    uint8_t buf[TEMP_DATA_LEN];
+    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, TEMP_DATA_LEN); // 读取温度值
     if (ret != 0) {
         return -1;
     }
@@ -221,9 +221,9 @@ static int MPU6050ReturnTemp(short* Temperature)
 {
     int ret;
     short temp3;
-    uint8_t buf[2];
+    uint8_t buf[TEMP_DATA_LEN];
 
-    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, 2); // 读取温度值
+    ret = MPU6050ReadData(MPU6050_RA_TEMP_OUT_H, buf, TEMP_DATA_LEN); // 读取温度值
     if (ret != 0) {
         return -1;
     }

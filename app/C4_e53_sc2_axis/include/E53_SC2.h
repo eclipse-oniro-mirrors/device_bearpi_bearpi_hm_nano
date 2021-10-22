@@ -37,7 +37,9 @@
 #define MPU6050_RA_USER_CTRL        0x6A
 #define MPU6050_RA_PWR_MGMT_1       0x6B
 #define MPU6050_RA_WHO_AM_I         0x75
-#define SENSOR_DATA_WIDTH_8_BIT         8 // 8 bit
+#define SENSOR_DATA_WIDTH_8_BIT     8 // 8 bit
+#define ACCEL_DATA_LEN              6
+#define TEMP_DATA_LEN               2
 
 typedef enum
 {
