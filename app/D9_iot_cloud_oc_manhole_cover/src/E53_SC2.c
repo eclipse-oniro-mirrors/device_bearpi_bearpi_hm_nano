@@ -30,6 +30,7 @@
 #define WIFI_IOT_IO_FUNC_GPIO_8_GPIO 0
 #define WIFI_IOT_IO_FUNC_GPIO_7_GPIO 0
 #define WIFI_IOT_I2C_IDX_1 1
+#define RESET_DELAY_US 20000
 
 /***************************************************************
  * 函数名称: E53SC2IoInit
@@ -258,7 +259,7 @@ void ZeroMotionInterrupt(void) // 静止中断
 void MPU6050Init(void)
 {
     MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X80); // 复位MPU6050
-    usleep(20000);
+    usleep(RESET_DELAY_US);
     MPU6050WriteReg(MPU6050_RA_PWR_MGMT_1, 0X00); // 唤醒MPU6050
     MPU6050WriteReg(MPU6050_RA_INT_ENABLE, 0X00); // 关闭所有中断
     MPU6050WriteReg(MPU6050_RA_USER_CTRL, 0X00);  // I2C主模式关闭
