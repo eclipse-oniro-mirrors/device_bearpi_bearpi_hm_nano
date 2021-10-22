@@ -30,6 +30,10 @@
 #define WIFI_IOT_IO_FUNC_GPIO_8_GPIO 0
 #define WIFI_IOT_IO_FUNC_GPIO_7_GPIO 0
 #define WIFI_IOT_I2C_IDX_1 1
+#define WIFI_IOT_IO_NAME_GPIO_7 7
+#define WIFI_IOT_IO_NAME_GPIO_8 8
+#define WIFI_IOT_IO_NAME_GPIO_0 0
+#define WIFI_IOT_IO_NAME_GPIO_1 1
 #define RESET_DELAY_US 20000
 
 /***************************************************************
@@ -40,18 +44,18 @@
  ***************************************************************/
 static void E53SC2IoInit(void)
 {
-    IoTGpioInit(8);
-    IoTGpioSetFunc(8, WIFI_IOT_IO_FUNC_GPIO_8_GPIO);
-    IoTGpioSetDir(8, IOT_GPIO_DIR_OUT); // 设置GPIO_8为输出模式
+    IoTGpioInit(WIFI_IOT_IO_NAME_GPIO_8);
+    IoTGpioSetFunc(WIFI_IOT_IO_NAME_GPIO_8, WIFI_IOT_IO_FUNC_GPIO_8_GPIO);
+    IoTGpioSetDir(WIFI_IOT_IO_NAME_GPIO_8, IOT_GPIO_DIR_OUT); // 设置GPIO_8为输出模式
 
-    IoTGpioInit(7);
-    IoTGpioSetFunc(7, WIFI_IOT_IO_FUNC_GPIO_7_GPIO);
-    IoTGpioSetDir(7, IOT_GPIO_DIR_OUT); // 设置GPIO_7为输出模式
+    IoTGpioInit(WIFI_IOT_IO_NAME_GPIO_7);
+    IoTGpioSetFunc(WIFI_IOT_IO_NAME_GPIO_7, WIFI_IOT_IO_FUNC_GPIO_7_GPIO);
+    IoTGpioSetDir(WIFI_IOT_IO_NAME_GPIO_7, IOT_GPIO_DIR_OUT); // 设置GPIO_7为输出模式
 
-    IoTGpioInit(0);
-    IoTGpioSetFunc(0, WIFI_IOT_IO_FUNC_GPIO_0_I2C1_SDA); // GPIO_0复用为I2C1_SDA
-    IoTGpioInit(1);
-    IoTGpioSetFunc(1, WIFI_IOT_IO_FUNC_GPIO_1_I2C1_SCL); // GPIO_1复用为I2C1_SCL
+    IoTGpioInit(WIFI_IOT_IO_NAME_GPIO_0);
+    IoTGpioSetFunc(WIFI_IOT_IO_NAME_GPIO_0, WIFI_IOT_IO_FUNC_GPIO_0_I2C1_SDA); // GPIO_0复用为I2C1_SDA
+    IoTGpioInit(WIFI_IOT_IO_NAME_GPIO_1);
+    IoTGpioSetFunc(WIFI_IOT_IO_NAME_GPIO_1, WIFI_IOT_IO_FUNC_GPIO_1_I2C1_SCL); // GPIO_1复用为I2C1_SCL
     IoTI2cInit(WIFI_IOT_I2C_IDX_1, 400000);              /* baudrate: 400kbps */
 }
 /***************************************************************
@@ -163,9 +167,9 @@ static int MPU6050ReadAcc(short* accData)
     if (ret != 0) {
         return -1;
     }
-    accData[0] = (buf[0] << 8) | buf[1];
-    accData[1] = (buf[2] << 8) | buf[3];
-    accData[2] = (buf[4] << 8) | buf[5];
+    accData[ACCEL_X_AXIS] = (buf[ACCEL_X_AXIS_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[ACCEL_X_AXIS_MSB];
+    accData[ACCEL_Y_AXIS] = (buf[ACCEL_Y_AXIS_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[ACCEL_Y_AXIS_MSB];
+    accData[ACCEL_Z_AXIS] = (buf[ACCEL_Z_AXIS_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[ACCEL_Z_AXIS_MSB];
     return 0;
 }
 
@@ -183,9 +187,9 @@ static int MPU6050ReadGyro(short* gyroData)
     if (ret != 0) {
         return -1;
     }
-    gyroData[0] = (buf[0] << 8) | buf[1];
-    gyroData[1] = (buf[2] << 8) | buf[3];
-    gyroData[2] = (buf[4] << 8) | buf[5];
+    gyroData[ACCEL_X_AXIS] = (buf[ACCEL_X_AXIS_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[ACCEL_X_AXIS_MSB];
+    gyroData[ACCEL_Y_AXIS] = (buf[ACCEL_Y_AXIS_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[ACCEL_Y_AXIS_MSB];
+    gyroData[ACCEL_Z_AXIS] = (buf[ACCEL_Z_AXIS_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[ACCEL_Z_AXIS_MSB];
     return 0;
 }
 
@@ -203,7 +207,7 @@ static int MPU6050ReadTemp(short* tempData)
     if (ret != 0) {
         return -1;
     }
-    *tempData = (buf[0] << 8) | buf[1];
+    *tempData = (buf[TEMP_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[TEMP_MSB];
     return 0;
 }
 
@@ -223,7 +227,7 @@ static int MPU6050ReturnTemp(short* Temperature)
     if (ret != 0) {
         return -1;
     }
-    temp3 = (buf[0] << 8) | buf[1];
+    temp3 = (buf[TEMP_LSB] << SENSOR_DATA_WIDTH_8_BIT) | buf[TEMP_MSB];
     *Temperature = (((double)(temp3 + 13200)) / 280) - 13;
     return 0;
 }

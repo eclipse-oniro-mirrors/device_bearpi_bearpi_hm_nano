@@ -37,6 +37,7 @@
 #define MPU6050_RA_USER_CTRL        0x6A
 #define MPU6050_RA_PWR_MGMT_1       0x6B
 #define MPU6050_RA_WHO_AM_I         0x75
+#define SENSOR_DATA_WIDTH_8_BIT         8 // 8 bit
 
 typedef enum
 {
@@ -50,7 +51,19 @@ enum AccelAxisNum {
     ACCEL_Z_AXIS = 2,
     ACCEL_AXIS_NUM = 3,
 };
-
+enum AccelAxisPart {
+    ACCEL_X_AXIS_LSB = 0,
+    ACCEL_X_AXIS_MSB = 1,
+    ACCEL_Y_AXIS_LSB = 2,
+    ACCEL_Y_AXIS_MSB = 3,
+    ACCEL_Z_AXIS_LSB = 4,
+    ACCEL_Z_AXIS_MSB = 5,
+    ACCEL_AXIS_BUTT,
+};
+enum TempPart {
+    TEMP_LSB = 0,
+    TEMP_MSB = 1,
+};
 /* E53_SC2传感器数据类型定义 ------------------------------------------------------------*/
 typedef struct
 {
