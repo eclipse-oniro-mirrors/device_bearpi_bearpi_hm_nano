@@ -35,6 +35,7 @@
 #define WIFI_IOT_IO_NAME_GPIO_0 0
 #define WIFI_IOT_IO_NAME_GPIO_1 1
 #define RESET_DELAY_US 20000
+#define READ_DATA_DELAY_US 50000
 
 /***************************************************************
  * 函数名称: E53SC2IoInit
@@ -339,7 +340,7 @@ int E53SC2ReadData(E53SC2Data* ReadData)
     ReadData->Accel[ACCEL_X_AXIS] = Accel[ACCEL_X_AXIS];
     ReadData->Accel[ACCEL_Y_AXIS] = Accel[ACCEL_Y_AXIS];
     ReadData->Accel[ACCEL_Z_AXIS] = Accel[ACCEL_Z_AXIS];
-    usleep(50000);
+    usleep(READ_DATA_DELAY_US);
     return 0;
 }
 /***************************************************************
