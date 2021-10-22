@@ -165,7 +165,7 @@ static void IotMainTaskEntry(void)
     attr.cb_mem = NULL;
     attr.cb_size = 0U;
     attr.stack_mem = NULL;
-    attr.stack_size = CLOUD_TASK_STACK_SIZES;
+    attr.stack_size = CLOUD_TASK_STACK_SIZE;
     attr.priority = CLOUD_TASK_PRIO;
 
     if (osThreadNew((osThreadFunc_t)CloudMainTaskEntry, NULL, &attr) == NULL) {

@@ -177,7 +177,7 @@ static void deal_cmd_msg(cmd_t* cmd)
     if (obj_cmdname == NULL) {
         cJSON_Delete(obj_root);
     }
-    if (strcmp(cJSON_GetStringValue(obj_cmdname), "Light_Control_Led" == 0)) {
+    if (strcmp(cJSON_GetStringValue(obj_cmdname), "Light_Control_Led") == 0) {
         obj_paras = cJSON_GetObjectItem(obj_root, "paras");
         if (obj_paras == NULL) {
             cJSON_Delete(obj_root);
