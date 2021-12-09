@@ -3,6 +3,5 @@
 group("bearpi_hm_nano") {
   deps = [
     "app",
-    "sdk_liteos:wifiiot_sdk",
   ]
 }
