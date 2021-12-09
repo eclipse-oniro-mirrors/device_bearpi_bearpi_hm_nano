@@ -34,7 +34,7 @@ lite_component("sdk") {
 
   deps = [
     "//build/lite/config/component/cJSON:cjson_static",
+    "//device/bearpi/bearpi_hm_nano/hi3861_adapter/hals/communication/wifi_lite/wifiservice",
     "//device/bearpi/bearpi_hm_nano/hi3861_adapter/kal",
-    "//device/hisilicon/hispark_pegasus/hi3861_adapter/hals/communication/wifi_lite/wifiservice",
   ]
 }
