@@ -36,7 +36,5 @@ lite_component("sdk") {
     "//build/lite/config/component/cJSON:cjson_static",
     "//device/bearpi/bearpi_hm_nano/hi3861_adapter/kal",
     "//device/bearpi/bearpi_hm_nano/hi3861_adapter/hals/communication/wifi_lite/wifiservice",
-
-    
   ]
 }
