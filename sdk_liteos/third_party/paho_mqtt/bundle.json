@@ -21,5 +21,15 @@
         "os": "0.0.1",
         "kernel": "",
         "board": ""
-    }
+    },
+  "component": {
+    "name": "paho_mqtt",
+    "subsystem": "device",
+    "adapted_system_type": [ "mini" ],
+    "deps": {
+      "components": [],
+      "third_party": []
+    },
+    "sub_component": []
+  }
 }
