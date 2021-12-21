@@ -30,6 +30,8 @@
       "components": [],
       "third_party": []
     },
-    "sub_component": []
+    "build": {
+      "sub_component": []
+    }
   }
 }
