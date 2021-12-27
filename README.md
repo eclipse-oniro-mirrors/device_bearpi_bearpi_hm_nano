@@ -1,12 +1,70 @@
 # BearPi-HM Nano<a name="ZH-CN_TOPIC_0000001130176841"></a>
 
--   [开发板介绍](#section11660541593)
+-   [获取源码](#section11660541590)
+-   [开发环境搭建](#section11660541591)
+-   [源码编译](#section11660541592)
+-   [固件烧录](#section11660541593)
+-   [开发板介绍](#section11660541594)
 -   [开发板详情](#section12212842173518)
 -   [应用案例场景](#section1464106163819)
 -   [目录](#section1464106163817)
 
+## 获取源码<a name="section11660541590"></a>
+```
+repo init -u git@gitee.com:openharmony/manifest.git -b master --no-repo-verify
+repo sync -c
+repo forall -c 'git lfs pull'
+```
+## 开发环境搭建<a name="section11660541591"></a>
+请参考[Hi3861开发环境搭建](https://gitee.com/openharmony/docs/blob/master/zh-cn/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md)
 
-## 开发板介绍<a name="section11660541593"></a>
+## 源码编译<a name="section11660541592"></a>
+```
+hb set
+
+bearpi
+    >bearpi_hm_nano
+
+选择bearpi_hm_nano
+
+hb build -f
+```
+## 固件烧录<a name="section11660541593"></a>
+1. 在Windows打开Hiburn工具，并点击`Refresh`，在`COM`中选择`第一-4`看到的COM号，如下图所示。
+- Hiburn工具下载地址（百度云）：https://pan.baidu.com/s/1i6P_LuUzclS6hlQ3XHOobQ&amp;t=downloads 提取码：1234
+
+
+
+    ![](docs/quick-start/figures/HiBurn主界面.png)
+
+    然后点击`Setting`，并选择 `Com settings`。
+
+2. 在Com settings中设置`Baud`为：`921600`，点击确定 ，如下图所示。   
+
+    ![](docs/quick-start/figures/HiBurn_Comsettings.png)
+
+3. 点击 Hiburn工具中的`Select file`按钮，在弹出的文件框中，选择工程文件`./out/bearpi_hm_nano/bearpi_hm_nano/` 路径下的`Hi3861_wifiiot_app_allinone.bin` 文件，如下图所示。
+
+    ![](docs/quick-start/figures/HiBurn_打开文件.png)
+
+4. 点击`Auto burn`复选框，然后点击`Connect`，如下图所示。
+
+    ![](docs/quick-start/figures/HiBurn准备下载.png)
+
+    此时`Connect`按钮变成`Disconnect`，等待下载。
+
+5. 复位开发板`RESET`按键，开始下载程序，如下图所示。
+
+    ![](docs/quick-start/figures/复位开发板.png)
+
+    ![](docs/quick-start/figures/Hiburn_下载程序中.png)
+
+    
+6. 直到出现`Execution Successful`字样，程序下载完成。
+
+7. 下载完后，点击`Disconnect`按钮，便于后面调测使用。
+
+## 开发板介绍<a name="section11660541594"></a>
 
 ### 开发板概述
 
