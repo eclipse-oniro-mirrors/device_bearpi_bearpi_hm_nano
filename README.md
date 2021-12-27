@@ -30,7 +30,7 @@ bearpi
 hb build -f
 ```
 ## 固件烧录<a name="section11660541593"></a>
-1. 在Windows打开Hiburn工具，并点击`Refresh`，在`COM`中选择`第一-4`看到的COM号，如下图所示。
+1. 在Windows打开Hiburn工具，并点击`Refresh`，在`COM`中选择COM号，如下图所示。
 - Hiburn工具下载地址（百度云）：https://pan.baidu.com/s/1i6P_LuUzclS6hlQ3XHOobQ&amp;t=downloads 提取码：1234
 
 
