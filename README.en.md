@@ -1,11 +1,65 @@
 # BearPi-HM Nano<a name="ZH-CN_TOPIC_0000001130176841"></a>
 
+-   [Get source code](#section11660541590)
+-   [Construction of development environment](#section11660541591)
+-   [Source code compilation](#section11660541592)
+-   [Firmware burning](#section11660541593)
 -   [Introduction to development board](#section11660541593)
 -   [Development board details](#section12212842173518)
 -   [Application](#section1464106163819)
 -   [Directory Structure](#section1464106163817)
 
+## Get source code<a name="section11660541590"></a>
+```
+repo init -u git@gitee.com:openharmony/manifest.git -b master --no-repo-verify
+repo sync -c
+repo forall -c 'git lfs pull'
+```
+## Construction of development environment<a name="section11660541591"></a>
+Please refer to [Hi3861 development environment construction](https://gitee.com/openharmony/docs/blob/master/en/device-dev/quick-start/quickstart-lite-steps-hi3861-setting.md)
 
+## Source code compilation<a name="section11660541592"></a>
+```
+hb set
+
+bearpi
+    >bearpi_hm_nano
+
+选择bearpi_hm_nano
+
+hb build -f
+```
+## Firmware burning<a name="section11660541593"></a>
+1. Open hiburn tool in windows, click 'Refresh', and select com number in 'com', as shown in the following figure。
+
+    ![](docs/quick-start/figures/HiBurn_Main_interface.png)
+
+    Then click 'Setting' and select 'Com settings'.
+
+2. Set 'Baud' to '921600' in com settings, and click OK, as shown in the figure below.   
+
+    ![](docs/quick-start/figures/HiBurn_Comsettings.png)
+
+3. Click the 'select file' button in hiburn tool, and in the pop-up file box, select the './out/bearpi_hm_nano/bearpi_hm_nano/' file under the 'Hi3861_wifiiot_app_allinone.bin' path of the project file, as shown in the following figure.
+
+    ![](docs/quick-start/figures/HiBurn_Open_file.png)
+
+4. Click the 'Auto burn' check box, and then click 'Connect', as shown in the following figure.
+
+    ![](docs/quick-start/figures/HiBurn_Ready_to_download.png)
+
+    The 'Connect' button changes to 'Disconnect' and waits for the download.
+
+5. Reset the 'RESET' button on the development board to start downloading the program, as shown in the figure below.
+
+    ![](docs/quick-start/figures/Reset_development_board.png)
+
+    ![](docs/quick-start/figures/Hiburn_Downloading.png)
+
+    
+6. Until the word "Execution Successful" appears, the program download is completed.
+
+7. After downloading, click the 'Disconnect' button to facilitate later debugging.
 ## Introduction to development board<a name="section11660541593"></a>
 
 ### Development board overview
